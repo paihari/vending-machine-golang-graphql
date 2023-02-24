@@ -1,0 +1,68 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Resident {
+  id: ID!
+  name: String!
+  description: String!
+  purchaseOrderId: String!
+  client: String!
+  cloudProvider: String!
+  residentCid: String!
+  rootCid: String!
+  class: String!
+  stage: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+}
+
+input NewResident {
+  name: String!
+  description: String!
+  purchaseOrderId: String!
+  clientName: String!
+  cloudProviderName: String!
+  className: String!
+  stageName: String!
+}
+
+type CloudProvider {
+  id: ID!
+  name: String!
+  rootCid: String!
+}
+
+type Class {
+  id: ID!
+  name: String!
+  description: String!
+
+}
+
+type Stage {
+  id: ID!
+  name: String!
+  description: String!
+}
+
+type Client {
+  id: ID!
+  name: String!
+  fullName: String!
+}
+
+
+
+
+
+type Query {
+  residents: [Resident!]!
+}
+
+
+type Mutation {
+  createResident(input: NewResident!): Resident!
+}

@@ -1,0 +1,45 @@
+
+
+
+Select region: Frankfurt, Germany (fra)
+Development - Single node, 1x shared CPU, 256MB RAM, 1GB disk
+
+
+(base) bantwal@Hariprasads-MacBook-Air flyapp % fly pg create
+Update available 0.0.450 -> 0.0.464.
+Run "fly version update" to upgrade.
+? Choose an app name (leave blank to generate one): service-controller
+automatically selected personal organization: Hari Bantwal
+? Select region: Paris, France (cdg)
+? Select configuration: Development - Single node, 1x shared CPU, 256MB RAM, 1GB disk
+Creating postgres cluster in organization personal
+Creating app...
+Setting secrets on app service-controller...
+Provisioning 1 of 1 machines with image flyio/postgres:14.6@sha256:9cfb3fafcc1b9bc2df7c901d2ae4a81e83ba224bfe79b11e4dc11bb1838db46e
+Waiting for machine to start...
+Machine 9080291c695358 is created
+==> Monitoring health checks
+  Waiting for 9080291c695358 to become healthy (started, 3/3)
+
+Postgres cluster service-controller created
+  Username:    postgres
+  Password:    atMJwKPAfR9M6yD
+  Hostname:    service-controller.internal
+  Proxy port:  5432
+  Postgres port:  5433
+  Connection string: postgres://postgres:atMJwKPAfR9M6yD@service-controller.internal:5432
+
+Save your credentials in a secure place -- you won't be able to see them again!
+
+
+
+docker run -p 5050:80 -e PGADMIN_DEFAULT_EMAIL=admin -e PGADMIN_DEFAULT_PASSWORD=admin dpage/pgadmin4
+
+
+https://fly.io/docs/postgres/connecting/connecting-external/
+
+
+https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html
+
+
+docker run -p 5050:80 -e PGADMIN_DEFAULT_EMAIL=admin@pai.com -e PGADMIN_DEFAULT_PASSWORD=admin dpage/pgadmin4
