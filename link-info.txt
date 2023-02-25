@@ -43,3 +43,11 @@ https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html
 
 
 docker run -p 5050:80 -e PGADMIN_DEFAULT_EMAIL=admin@pai.com -e PGADMIN_DEFAULT_PASSWORD=admin dpage/pgadmin4
+
+
+github.com/paihari/vending-machine-golang-graphql/graph imports
+	github.com/paihari/vending-machine-golang-graphql/base: cannot find module providing package github.com/paihari/vending-machine-golang-graphql/base: module github.com/paihari/vending-machine-golang-graphql/base: git ls-remote -q origin in /Users/bantwal/go/pkg/mod/cache/vcs/1eb8f267f9d4ef7eaeb400fecd31459a2df81455af017b45d77566f409e74ec7: exit status 128:
+	remote: Repository not found.
+	fatal: Authentication failed for 'https://github.com/paihari/vending-machine-golang-graphql/'
+
+  
