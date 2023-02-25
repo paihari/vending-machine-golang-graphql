@@ -7,38 +7,29 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
+	"github.com/paihari/vending-machine-golang-graphql/graph/awscompose"
 )
 
 // CreateResident is the resolver for the createResident field.
 func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error) {
-	connStr := os.Getenv("DB_URL")
-	opt, err := pg.ParseURL(connStr)
+	residentCid, err := awscompose.CreateResidentAccount(input.Name)
 	if err != nil {
-		panic(err)
+		log.Fatalf("Unable to retrieve labels: %v", err)
+		return nil, err
 	}
-	db := pg.Connect(opt)
-	defer db.Close()
 
-	var residentCid string
-	residentCid = "SOME CID"
+	client := base.GetClientByName(input.ClientName)
+	cloudProvider := base.GetCloudProviderByName(input.CloudProviderName)
+	class := base.GetClassByName(input.ClassName)
+	stage := base.GetStageByName(input.Name)
 
-	var client model.Client
-	db.Model(&client).Where("name = ?", input.ClientName).Select()
-
-	
-	var cloudProvider model.CloudProvider
-	db.Model(&cloudProvider).Where("name = ?", input.CloudProviderName).Select()
-
-	var class model.Class
-	db.Model(&class).Where("name = ?", input.ClassName).Select()
-
-	var stage model.Stage
-	db.Model(&stage).Where("name = ?", input.StageName).Select()
-
+	// TODO: Get the Values user context
 	var createdBy, updatedBy string
 	createdBy = "VEND"
 	updatedBy = "VEND"
@@ -47,7 +38,7 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 		Name:            input.Name,
 		Description:     input.Description,
 		PurchaseOrderID: input.PurchaseOrderID,
-		Client:          input.ClientName,
+		Client:          client.Name,
 		CloudProvider:   cloudProvider.Name,
 		ResidentCid:     residentCid,
 		RootCid:         cloudProvider.RootCid,
@@ -56,6 +47,14 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 		CreatedBy:       createdBy,
 		UpdatedBy:       updatedBy,
 	}
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+	db := pg.Connect(opt)
+	defer db.Close()
 
 	_, error := db.Model(&resident).Insert()
 

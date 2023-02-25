@@ -1,0 +1,166 @@
+package awscompose
+
+import (
+    "context"
+    "fmt"
+    "time"
+
+    "github.com/aws/aws-sdk-go-v2/config"
+    "github.com/aws/aws-sdk-go-v2/service/organizations"
+)
+
+func CreateResidentAccount(accountName string) (string, error){
+    // Load the AWS SDK configuration from the environment or shared config files
+    cfg, err := config.LoadDefaultConfig(context.TODO())
+    if err != nil {
+        panic(err)
+    }
+
+    // Create an AWS Organizations service client
+    svc := organizations.NewFromConfig(cfg)
+
+    // Set the account name and email address
+    emailAddress := "pai2023022403@pai.ch"
+
+    // Call the CreateAccount operation to create the account
+    createAccountResult, err :=  svc.CreateAccount(context.TODO(), &organizations.CreateAccountInput{
+        AccountName:  &accountName,
+        Email:        &emailAddress,
+        IamUserAccessToBilling: "DENY",
+    })
+	
+    if err != nil {
+		fmt.Println("Error creating AWS account:", err)
+		return "", err
+	}
+
+
+
+    	// Retrieve the account creation request ID
+	createAccountRequestId := createAccountResult.CreateAccountStatus.Id
+
+	// Wait for account creation process to complete
+    for {
+		describeCreateAccountInput := &organizations.DescribeCreateAccountStatusInput{
+			CreateAccountRequestId: createAccountRequestId,
+		}
+		describeCreateAccountResult, err := svc.DescribeCreateAccountStatus(context.Background(), describeCreateAccountInput)
+		if err != nil {
+			return "", fmt.Errorf("error describing create account status: %w", err)
+		}
+
+		status := describeCreateAccountResult.CreateAccountStatus.State
+		if status == organizations.CreateAccountStateSucceeded {
+			// Account creation process is complete
+			return *describeCreateAccountResult.CreateAccountStatus.AccountId, nil
+		} else if status == organizations.CreateAccountStateFailed {
+			// Account creation process has failed
+			return "", errors.New(*describeCreateAccountResult.CreateAccountStatus.FailureReason)
+		} else {
+			// Account creation process is still in progress, wait for some time before checking again
+			time.Sleep(30 * time.Second)
+		}
+	}
+
+}
+
+
+
+
+
+
+
+    // fmt.Println("Sleeping for 5 seconds...")
+    // time.Sleep(15 * time.Second)
+    // fmt.Println("Done sleeping.")
+
+    // jsonStr, err := json.Marshal(output)
+	// if err != nil {
+	// 	fmt.Println(err)
+		
+	// }
+
+	// // Print the JSON string
+	// fmt.Println(string(jsonStr))
+
+    // if err != nil {
+    //     return "", fmt.Errorf("failed to create AWS account: %v", err)
+    // }
+    // fmt.Println(output.CreateAccountStatus)
+    // if output.CreateAccountStatus == nil {
+    //     return "", fmt.Errorf("CreateAccountStatus is nil")
+    // }
+
+
+    // fmt.Println("Account created successfully!")
+    // fmt.Println(output)
+
+    // // return *output.CreateAccountStatus.AccountId, nil
+    // return accountName, nil
+//}
+
+
+
+// package main
+
+// import (
+// 	"context"
+// 	"errors"
+// 	"fmt"
+// 	"time"
+
+// 	"github.com/aws/aws-sdk-go-v2/config"
+// 	"github.com/aws/aws-sdk-go-v2/service/organizations"
+// )
+
+// func createAWSAccount(accountName string, email string) (string, error) {
+// 	// Load AWS config
+// 	cfg, err := config.LoadDefaultConfig(context.Background())
+// 	if err != nil {
+// 		return "", fmt.Errorf("error loading AWS config: %w", err)
+// 	}
+
+// 	// Create Organizations client
+// 	svc := organizations.NewFromConfig(cfg)
+
+// 	// Set up CreateAccount input parameters
+// 	createAccountInput := &organizations.CreateAccountInput{
+// 		AccountName:          accountName,
+// 		Email:                email,
+// 		IamUserAccessToBilling: &organizations.IAMUserAccessToBilling{
+// 			Allow: true,
+// 		},
+// 	}
+
+// 	// Call CreateAccount API
+// 	createAccountResult, err := svc.CreateAccount(context.Background(), createAccountInput)
+// 	if err != nil {
+// 		return "", fmt.Errorf("error creating AWS account: %w", err)
+// 	}
+
+// 	// Retrieve the account creation request ID
+// 	createAccountRequestId := createAccountResult.CreateAccountStatus.Id
+
+// 	// Wait for account creation process to complete
+// 	for {
+// 		describeCreateAccountInput := &organizations.DescribeCreateAccountStatusInput{
+// 			CreateAccountRequestId: createAccountRequestId,
+// 		}
+// 		describeCreateAccountResult, err := svc.DescribeCreateAccountStatus(context.Background(), describeCreateAccountInput)
+// 		if err != nil {
+// 			return "", fmt.Errorf("error describing create account status: %w", err)
+// 		}
+
+// 		status := describeCreateAccountResult.CreateAccountStatus.State
+// 		if status == organizations.CreateAccountStateSucceeded {
+// 			// Account creation process is complete
+// 			return *describeCreateAccountResult.CreateAccountStatus.AccountId, nil
+// 		} else if status == organizations.CreateAccountStateFailed {
+// 			// Account creation process has failed
+// 			return "", errors.New(*describeCreateAccountResult.CreateAccountStatus.FailureReason)
+// 		} else {
+// 			// Account creation process is still in progress, wait for some time before checking again
+// 			time.Sleep(30 * time.Second)
+// 		}
+// 	}
+// }

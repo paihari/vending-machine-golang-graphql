@@ -4,6 +4,8 @@ go 1.19
 
 require (
 	github.com/99designs/gqlgen v0.17.24
+	github.com/aws/aws-sdk-go-v2/config v1.18.15
+	github.com/aws/aws-sdk-go-v2/service/organizations v1.18.4
 	github.com/go-pg/pg/v10 v10.11.0
 	github.com/joho/godotenv v1.5.1
 	github.com/vektah/gqlparser/v2 v2.5.1
@@ -11,6 +13,17 @@ require (
 
 require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.17.5 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.15 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.23 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.29 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.23 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.30 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.23 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.12.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.18.5 // indirect
+	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/go-pg/zerochecker v0.2.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect

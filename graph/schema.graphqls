@@ -7,6 +7,7 @@ type Resident {
   name: String!
   description: String!
   purchaseOrderId: String!
+  emailAddress: String!
   client: String!
   cloudProvider: String!
   residentCid: String!
@@ -23,6 +24,7 @@ input NewResident {
   name: String!
   description: String!
   purchaseOrderId: String!
+  emailAddress: String!
   clientName: String!
   cloudProviderName: String!
   className: String!
@@ -54,14 +56,9 @@ type Client {
   fullName: String!
 }
 
-
-
-
-
 type Query {
   residents: [Resident!]!
 }
-
 
 type Mutation {
   createResident(input: NewResident!): Resident!

@@ -24,6 +24,7 @@ type NewResident struct {
 	Name              string `json:"name"`
 	Description       string `json:"description"`
 	PurchaseOrderID   string `json:"purchaseOrderId"`
+	EmailAddress      string `json:"emailAddress"`
 	ClientName        string `json:"clientName"`
 	CloudProviderName string `json:"cloudProviderName"`
 	ClassName         string `json:"className"`
@@ -35,6 +36,7 @@ type Resident struct {
 	Name            string `json:"name"`
 	Description     string `json:"description"`
 	PurchaseOrderID string `json:"purchaseOrderId"`
+	EmailAddress    string `json:"emailAddress"`
 	Client          string `json:"client"`
 	CloudProvider   string `json:"cloudProvider"`
 	ResidentCid     string `json:"residentCid"`
