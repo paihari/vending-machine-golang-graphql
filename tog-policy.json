@@ -1,0 +1,19 @@
+
+-- AT CLOUD ESTATE LEVEL
+
+{
+    "tags": {
+        "stage": {
+            "required": true
+        },
+        "class": {
+            "required": true
+        },
+        "po": {
+            "required": true
+        },
+        "client": {
+            "required": true
+        }
+    }
+}

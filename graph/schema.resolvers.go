@@ -7,37 +7,59 @@ package graph
 import (
 	"context"
 	"fmt"
-	"log"
+	//"log"
 	"os"
 
 	pg "github.com/go-pg/pg/v10"
-	"github.com/paihari/vending-machine-golang-graphql/base"
+	//"github.com/paihari/vending-machine-golang-graphql/awscompose"
+	//"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
-	"github.com/paihari/vending-machine-golang-graphql/graph/awscompose"
 )
 
 // CreateResident is the resolver for the createResident field.
 func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error) {
-	residentCid, err := awscompose.CreateResidentAccount(input.Name)
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
 	if err != nil {
-		log.Fatalf("Unable to retrieve labels: %v", err)
-		return nil, err
+		panic(err)
 	}
+	db := pg.Connect(opt)
+	defer db.Close()
 
-	client := base.GetClientByName(input.ClientName)
-	cloudProvider := base.GetCloudProviderByName(input.CloudProviderName)
-	class := base.GetClassByName(input.ClassName)
-	stage := base.GetStageByName(input.Name)
+	// client := base.GetClientByName(input.ClientName)
+	var client model.Client
+	db.Model(&client).Where("name = ?", input.ClientName).Select()
 
-	// TODO: Get the Values user context
+	//cloudProvider := base.GetCloudProviderByName(input.CloudProviderName)
+
+	var cloudProvider model.CloudProvider
+	db.Model(&cloudProvider).Where("name = ?", input.CloudProviderName).Select()
+	
+	// class := base.GetClassByName(input.ClassName)
+	var class model.Class
+	db.Model(&class).Where("name = ?", input.ClassName).Select()
+
+	// stage := base.GetStageByName(input.Name)
+	var stage model.Stage
+	db.Model(&stage).Where("name = ?", input.StageName).Select()
+
 	var createdBy, updatedBy string
 	createdBy = "VEND"
 	updatedBy = "VEND"
+
+	// residentCid, err := awscompose.CreateResidentAccount(input.Name, input.EmailAddress)
+	// if err != nil {
+	// 	log.Fatalf("Unable to retrieve labels: %v", err)
+	// 	return nil, err
+	// }
+
+	residentCid := "SOME CID"
 
 	resident := model.Resident{
 		Name:            input.Name,
 		Description:     input.Description,
 		PurchaseOrderID: input.PurchaseOrderID,
+		EmailAddress:    input.EmailAddress,
 		Client:          client.Name,
 		CloudProvider:   cloudProvider.Name,
 		ResidentCid:     residentCid,
@@ -47,14 +69,6 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 		CreatedBy:       createdBy,
 		UpdatedBy:       updatedBy,
 	}
-
-	connStr := os.Getenv("DB_URL")
-	opt, err := pg.ParseURL(connStr)
-	if err != nil {
-		panic(err)
-	}
-	db := pg.Connect(opt)
-	defer db.Close()
 
 	_, error := db.Model(&resident).Insert()
 

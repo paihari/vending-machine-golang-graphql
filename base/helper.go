@@ -1,16 +1,19 @@
 package base
 
 import (
+	"fmt"
 	"os"
-	"github.com/paihari/vending-machine-golang-graphql/graph/model"
-	pg "github.com/go-pg/pg/v10"
 
+	pg "github.com/go-pg/pg/v10"
+	"github.com/paihari/vending-machine-golang-graphql/graph/model"
 )
 
 func GetClientByName(clientName string) model.Client {
 
 	var client model.Client
 	GetDb().Model(&client).Where("name = ?", clientName).Select()
+	fmt.Println("Client NAme")
+	fmt.Println(client)
 	return client
 }
 
@@ -35,11 +38,6 @@ func GetStageByName(stageName string) model.Stage {
 	return stage
 }
 
-
-
-
-
-
 func GetDb() pg.DB {
 
 	connStr := os.Getenv("DB_URL")
@@ -51,4 +49,3 @@ func GetDb() pg.DB {
 	defer db.Close()
 	return *db;
 }
-
