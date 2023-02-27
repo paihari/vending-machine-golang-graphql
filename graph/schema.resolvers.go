@@ -7,12 +7,9 @@ package graph
 import (
 	"context"
 	"fmt"
-	//"log"
 	"os"
 
 	pg "github.com/go-pg/pg/v10"
-	//"github.com/paihari/vending-machine-golang-graphql/awscompose"
-	//"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
 )
 
@@ -34,7 +31,7 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 
 	var cloudProvider model.CloudProvider
 	db.Model(&cloudProvider).Where("name = ?", input.CloudProviderName).Select()
-	
+
 	// class := base.GetClassByName(input.ClassName)
 	var class model.Class
 	db.Model(&class).Where("name = ?", input.ClassName).Select()

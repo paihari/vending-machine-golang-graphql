@@ -12,7 +12,7 @@ import (
 
 const defaultPort = "8080"
 
-func main() {
+func main_1() {
 	
 	port := os.Getenv("PORT")
 	if port == "" {
