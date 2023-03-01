@@ -16,33 +16,22 @@ import (
 
 // CreateResident is the resolver for the createResident field.
 func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error) {
-	// connStr := os.Getenv("DB_URL")
-	// opt, err := pg.ParseURL(connStr)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// db := pg.Connect(opt)
+	
+	
 	db := base.GetDb()
 	defer db.Close()
 
-	class := base.GetClassByName(input.ClassName, db)
-	//var class model.Class
-	fmt.Println(input.ClassName)
-	//db.Model(&class).Where("name = ?", input.ClassName).Select()
-	fmt.Println(class)
-
-	stage := base.GetStageByName(input.StageName, db)
-	//var stage model.Stage
-	//db.Model(&stage).Where("name = ?", input.StageName).Select()
+	//stage := base.GetStageByName(input.StageName, db)
+	var stage model.Stage
+	db.Model(&stage).Where("name = ?", input.StageName).Select()
 
 	client := base.GetClientByName(input.ClientName, db)
-	//var client model.Client
-	//db.Model(&client).Where("name = ?", input.ClientName).Select()
 
 	cloudProvider := base.GetCloudProviderByName(input.CloudProviderName, db)
 
-	//var cloudProvider model.CloudProvider
-	//db.Model(&cloudProvider).Where("name = ?", input.CloudProviderName).Select()
+	//class := base.GetClassByName(input.ClassName, db)
+	var class model.Class
+	db.Model(&class).Where("name = ?", input.ClassName).Select()
 
 	var createdBy, updatedBy string
 	createdBy = "VEND"

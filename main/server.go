@@ -4,9 +4,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"github.com/joho/godotenv"
+
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/joho/godotenv"
+	"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph"
 )
 
@@ -24,7 +26,7 @@ func main() {
 	}
 	
 	
-	Database := graph.Connect()
+	Database := base.Connect()
 
 	srv := handler.NewDefaultServer(
 		graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{DB: Database}}))
