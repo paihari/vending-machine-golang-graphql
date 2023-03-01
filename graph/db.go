@@ -12,7 +12,6 @@ func Connect() *pg.DB {
    }
 
    db := pg.Connect(opt)
-   defer db.Close()
    
    if _, DBStatus := db.Exec("SELECT 1"); DBStatus != nil {
        panic("PostgreSQL is down")

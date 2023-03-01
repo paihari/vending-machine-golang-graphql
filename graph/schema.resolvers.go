@@ -10,35 +10,39 @@ import (
 	"os"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
 )
 
 // CreateResident is the resolver for the createResident field.
 func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error) {
-	connStr := os.Getenv("DB_URL")
-	opt, err := pg.ParseURL(connStr)
-	if err != nil {
-		panic(err)
-	}
-	db := pg.Connect(opt)
+	// connStr := os.Getenv("DB_URL")
+	// opt, err := pg.ParseURL(connStr)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// db := pg.Connect(opt)
+	db := base.GetDb()
 	defer db.Close()
 
-	// client := base.GetClientByName(input.ClientName)
-	var client model.Client
-	db.Model(&client).Where("name = ?", input.ClientName).Select()
+	class := base.GetClassByName(input.ClassName, db)
+	//var class model.Class
+	fmt.Println(input.ClassName)
+	//db.Model(&class).Where("name = ?", input.ClassName).Select()
+	fmt.Println(class)
 
-	//cloudProvider := base.GetCloudProviderByName(input.CloudProviderName)
+	stage := base.GetStageByName(input.StageName, db)
+	//var stage model.Stage
+	//db.Model(&stage).Where("name = ?", input.StageName).Select()
 
-	var cloudProvider model.CloudProvider
-	db.Model(&cloudProvider).Where("name = ?", input.CloudProviderName).Select()
+	client := base.GetClientByName(input.ClientName, db)
+	//var client model.Client
+	//db.Model(&client).Where("name = ?", input.ClientName).Select()
 
-	// class := base.GetClassByName(input.ClassName)
-	var class model.Class
-	db.Model(&class).Where("name = ?", input.ClassName).Select()
+	cloudProvider := base.GetCloudProviderByName(input.CloudProviderName, db)
 
-	// stage := base.GetStageByName(input.Name)
-	var stage model.Stage
-	db.Model(&stage).Where("name = ?", input.StageName).Select()
+	//var cloudProvider model.CloudProvider
+	//db.Model(&cloudProvider).Where("name = ?", input.CloudProviderName).Select()
 
 	var createdBy, updatedBy string
 	createdBy = "VEND"

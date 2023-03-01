@@ -14,7 +14,7 @@ import (
 )
 
 
-func main() {
+func main1() {
 
 	cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {

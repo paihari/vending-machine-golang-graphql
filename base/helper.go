@@ -1,44 +1,40 @@
 package base
 
 import (
-	"fmt"
 	"os"
-
 	pg "github.com/go-pg/pg/v10"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
 )
 
-func GetClientByName(clientName string) model.Client {
+func GetClientByName(clientName string, db *pg.DB ) model.Client {
 
 	var client model.Client
-	GetDb().Model(&client).Where("name = ?", clientName).Select()
-	fmt.Println("Client NAme")
-	fmt.Println(client)
+	db.Model(&client).Where("name = ?", clientName).Select()
 	return client
 }
 
-func GetCloudProviderByName(cloudProviderName string) model.CloudProvider {
+func GetCloudProviderByName(cloudProviderName string, db *pg.DB) model.CloudProvider {
 
 	var cloudProvider model.CloudProvider
-	GetDb().Model(&cloudProvider).Where("name = ?", cloudProviderName).Select()
+	db.Model(&cloudProvider).Where("name = ?", cloudProviderName).Select()
 	return cloudProvider
 }
 
-func GetClassByName(className string) model.Class {
+func GetClassByName(className string, db *pg.DB) model.Class {
 
 	var class model.Class
-	GetDb().Model(&class).Where("name = ?", class).Select()
+	db.Model(&class).Where("name = ?", class).Select()
 	return class
 }
 
-func GetStageByName(stageName string) model.Stage {
+func GetStageByName(stageName string, db *pg.DB) model.Stage {
 
 	var stage model.Stage
-	GetDb().Model(&stage).Where("name = ?", stage).Select()
+	db.Model(&stage).Where("name = ?", stage).Select()
 	return stage
 }
 
-func GetDb() pg.DB {
+func GetDb() *pg.DB {
 
 	connStr := os.Getenv("DB_URL")
 	opt, err := pg.ParseURL(connStr)
@@ -46,6 +42,6 @@ func GetDb() pg.DB {
 		panic(err)
 	}
 	db := pg.Connect(opt)
-	defer db.Close()
-	return *db;
+	defer db.Begin()
+	return db;
 }
