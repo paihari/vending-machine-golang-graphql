@@ -151,9 +151,6 @@ type Client {
 }
 
 
-
-
-
 type Query {
   
   federals: [Federal!]!
