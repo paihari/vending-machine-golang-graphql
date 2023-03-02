@@ -14,10 +14,91 @@ type Client struct {
 	FullName string `json:"fullName"`
 }
 
+type CloudEstate struct {
+	ID                  string `json:"id"`
+	UUID                string `json:"uuid"`
+	Name                string `json:"name"`
+	Description         string `json:"description"`
+	Federal             string `json:"federal"`
+	CloudProvider       string `json:"cloudProvider"`
+	FederalEmailAddress string `json:"federalEmailAddress"`
+	CloudEstateCid      string `json:"cloudEstateCid"`
+	CreatedAt           string `json:"createdAt"`
+	CreatedBy           string `json:"createdBy"`
+	UpdatedAt           string `json:"updatedAt"`
+	UpdatedBy           string `json:"updatedBy"`
+}
+
+type CloudEstatePolicy struct {
+	ID          string `json:"id"`
+	UUID        string `json:"uuid"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	CloudEstate string `json:"cloudEstate"`
+	PolicyType  string `json:"policyType"`
+	PolicyCid   string `json:"policyCid"`
+	PolicyJSON  string `json:"policyJson"`
+	CreatedAt   string `json:"createdAt"`
+	CreatedBy   string `json:"createdBy"`
+	UpdatedAt   string `json:"updatedAt"`
+	UpdatedBy   string `json:"updatedBy"`
+}
+
 type CloudProvider struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	RootCid string `json:"rootCid"`
+	ID        string `json:"id"`
+	UUID      string `json:"uuid"`
+	Name      string `json:"name"`
+	FullName  string `json:"fullName"`
+	CreatedAt string `json:"createdAt"`
+	CreatedBy string `json:"createdBy"`
+	UpdatedAt string `json:"updatedAt"`
+	UpdatedBy string `json:"updatedBy"`
+}
+
+type Federal struct {
+	ID        string `json:"id"`
+	UUID      string `json:"uuid"`
+	Name      string `json:"name"`
+	FullName  string `json:"fullName"`
+	CreatedAt string `json:"createdAt"`
+	CreatedBy string `json:"createdBy"`
+	UpdatedAt string `json:"updatedAt"`
+	UpdatedBy string `json:"updatedBy"`
+}
+
+type NewCloudEstate struct {
+	Name                string `json:"name"`
+	Description         string `json:"description"`
+	Federal             string `json:"federal"`
+	CloudProvider       string `json:"cloudProvider"`
+	FederalEmailAddress string `json:"federalEmailAddress"`
+	CloudEstateCid      string `json:"cloudEstateCid"`
+}
+
+type NewCloudEstatePolicyWithCid struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	CloudEstate string `json:"cloudEstate"`
+	PolicyType  string `json:"policyType"`
+	PolicyCid   string `json:"policyCid"`
+}
+
+type NewCloudEstatePolicyWithJSON struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	CloudEstate string `json:"cloudEstate"`
+	PolicyType  string `json:"policyType"`
+	PolicyJSON  string `json:"policyJson"`
+}
+
+type NewCloudProvider struct {
+	Name     string `json:"name"`
+	FullName string `json:"fullName"`
+}
+
+type NewFederal struct {
+	Name     string `json:"name"`
+	FullName string `json:"fullName"`
 }
 
 type NewResident struct {

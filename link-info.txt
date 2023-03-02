@@ -54,3 +54,86 @@ Enable Tags in resource group
 https://docs.aws.amazon.com/organizations/latest/userguide/services-that-can-integrate-tag-policies.html
 
 aws organizations enable-aws-service-access --service-principal tagpolicies.tag.amazonaws.com
+
+
+
+https://dev.to/leoloso/executing-multiple-queries-in-a-single-operation-in-graphql-goe#:~:text=When%20doing%20query%20batching%2C%20the,the%20latency%20from%20multiple%20requests.
+
+
+import (
+  "context"
+
+  "github.com/99designs/gqlgen/graphql"
+  "github.com/99designs/gqlgen/graphql/executor"
+  "github.com/99designs/gqlgen/graphql/handler"
+  "github.com/99designs/gqlgen/graphql/playground"
+  "github.com/99designs/gqlgen/graphql/resolver"
+  "github.com/99designs/gqlgen/graphql/schema"
+  "github.com/vektah/gqlparser/v2/ast"
+  "github.com/vektah/gqlparser/v2/validator"
+)
+
+type ExportDirective struct{}
+
+func (d *ExportDirective) Name() string {
+  return "export"
+}
+
+func (d *ExportDirective) Resolve(ctx context.Context, field *schema.Field, args map[string]interface{}, next graphql.Resolver) (interface{}, error) {
+  // Call the next resolver in the chain
+  value, err := next(ctx)
+  if err != nil {
+    return nil, err
+  }
+
+  // Export the result to the context under the specified name
+  exportName := field.Directives.ForName("export").Arguments[0].Value.Raw
+  graphql.AddResultContext(ctx, exportName, value)
+
+  // Return the original value
+  return value, nil
+}
+
+func main() {
+  // Define your GraphQL schema using gqlgen
+  type Query struct {
+    User  UserResolver
+    Posts PostsResolver
+  }
+
+  type UserResolver struct{}
+  func (r *UserResolver) User(ctx context.Context, id int) (*User, error) {
+    // Implement resolver for User query
+  }
+
+  type PostsResolver struct{}
+  func (r *PostsResolver) Posts(ctx context.Context, searchfor string) ([]*Post, error) {
+    // Implement resolver for Posts query
+  }
+
+  // Define the export directive and add it to your schema
+  cfg := schema.Config{
+    Query: Query{},
+    Directives: schema.DirectiveRoot{
+      Export: &ExportDirective{},
+    },
+  }
+  schema := schema.New(cfg)
+
+  // Create a GraphQL handler using gqlgen
+  srv := handler.NewDefaultServer(schema)
+  srv.SetQueryResolver(&resolver.DirectiveBased{Resolvers: Query{}})
+
+  // Serve the GraphQL API using gqlgen
+  http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+  http.Handle("/query", srv)
+  http.ListenAndServe(":8080", nil)
+}
+
+
+
+query cloudEstate {
+  cloudEstateByUUID(uuid: "ce95105a-9e7c-4e78-8082-d503f95c4b4f") {
+    name @export(as: "_name")
+  }
+}

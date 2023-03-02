@@ -6,6 +6,36 @@ import (
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
 )
 
+
+
+
+func GetCloudEstateByName(name string, db *pg.DB ) model.CloudEstate {
+	var cloudEstate model.CloudEstate
+	db.Model(&cloudEstate).Where("name = ?", name).Select()
+	return cloudEstate
+}
+
+func GetCloudEstateByUUID(uuid string, db *pg.DB ) model.CloudEstate {
+	var cloudEstate model.CloudEstate
+	db.Model(&cloudEstate).Where("uuid = ?", uuid).Select()
+	return cloudEstate
+}
+
+
+func GetFederalByUUID(uuid string, db *pg.DB ) model.Federal {
+	var federal model.Federal
+	db.Model(&federal).Where("uuid = ?", uuid).Select()
+	return federal
+}
+
+
+func GetFederalByName(name string, db *pg.DB ) model.Federal {
+	var federal model.Federal
+	db.Model(&federal).Where("name = ?", name).Select()
+	return federal
+}
+
+
 func GetClientByName(clientName string, db *pg.DB ) model.Client {
 
 	var client model.Client
@@ -19,6 +49,15 @@ func GetCloudProviderByName(cloudProviderName string, db *pg.DB) model.CloudProv
 	db.Model(&cloudProvider).Where("name = ?", cloudProviderName).Select()
 	return cloudProvider
 }
+
+func GetCloudProviderByUUID(uuid string, db *pg.DB) model.CloudProvider {
+
+	var cloudProvider model.CloudProvider
+	db.Model(&cloudProvider).Where("uuid = ?", uuid).Select()
+	return cloudProvider
+}
+
+
 
 func GetClassByName(className string, db *pg.DB) model.Class {
 

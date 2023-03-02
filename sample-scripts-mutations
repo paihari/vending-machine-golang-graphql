@@ -1,0 +1,125 @@
+
+mutation createFederal {
+  createFederal(input: {
+    name: "ASAP"
+    fullName: "Avaloq Sourcing Asia Pacific"
+    
+  }) {
+    uuid
+  }
+}
+
+mutation createCloudProvider {
+  createCloudProvider(input: {
+    name: "IBM"
+    fullName: "IBM Cloud"
+    
+  }){
+    __typename
+    uuid
+  }
+  
+}
+
+
+mutation createCloudEstate {
+  createCloudEstate(input: {
+    name: "ASSL-AWS-ESTATE-1"
+    description:"Cloud Estate 1 for ASSL with AWS"
+    federal: "ASSL"
+    cloudProvider: "AWS"
+    federalEmailAddress: "assl@vending.com"
+    cloudEstateCid: "ORG_CID"
+    
+  }){
+    uuid
+  }
+}
+
+
+query cloudEstate {
+  cloudEstateByUUID(uuid: "ce95105a-9e7c-4e78-8082-d503f95c4b4f") {
+    name 
+  }
+}
+
+mutation createCloudEstatePolicy {
+  createCloudEstatePolicyWithCid(input: {
+    name: "TAG-POLICY-FOR-AEVO-AWS-1"
+    description: "Federal Tag Policy for AEVEO and AWS-1"
+    cloudEstate: "AEVO-AWS-ESTATE"
+    policyType: "TAG"
+    policyCid: "POLICYARN"
+    
+  }) {
+    uuid
+  }
+}
+
+mutation createCloudEstatePolicy($tags: JSON!) {
+  createCloudEstatePolicyWithJson(input: {
+    name: "TAG-POLICY-FOR-AEVO-AWS-1"
+    description: "Federal Tag Policy for AEVEO and AWS-1"
+    cloudEstate: "AEVO-AWS-ESTATE"
+    policyType: "TAG"
+    policyJson: $tags
+    
+  }) {
+    uuid
+  }
+}
+
+{
+  "tags": "{\"CostCenter\":{\"tag_key\":{\"@@assign\":\"CostCenter\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}},\"Project\":{\"tag_key\":{\"@@assign\":\"Project\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}}}"
+}
+
+
+
+
+
+
+
+
+
+---
+
+query cloudEstate {
+  cloudEstateByUUID(uuid: "ce95105a-9e7c-4e78-8082-d503f95c4b4f") {
+    name
+  }
+}
+
+mutation createCloudEstatePolicy($name: String!) {
+  createCloudEstatePolicyWithCid(input: {
+    name: "TAG-POLICY-FOR-AEVO-AWS"
+    description: "Federal Tag Policy for AEVEO and AWS"
+    cloudEstate: $name
+    policyType: "TAG"
+    policyCid: "POLICYARN"
+    
+  }) {
+    uuid
+  }
+}
+----
+
+
+
+
+
+
+
+mutation createResident{
+  createResident(input: {
+    name: "AEVO-AWS-FREE"
+    description: "AEVO RESIDENT"
+    cloudProviderName: "AWS"
+    purchaseOrderId: "PO-NO"
+    clientName: "AEVO"
+    className: "free"
+    stageName: "development"
+  }) {
+    residentCid
+  }
+}
+

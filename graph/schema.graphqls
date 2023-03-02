@@ -2,6 +2,105 @@
 #
 # https://gqlgen.com/getting-started/
 
+scalar JSON
+
+type Federal {
+  id: ID!
+  uuid: String!
+  name: String!
+  fullName: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+}
+
+input NewFederal {
+  name: String!
+  fullName: String!
+}
+
+type CloudProvider {
+  id: ID!
+  uuid: String!
+  name: String!
+  fullName: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+}
+
+input NewCloudProvider {
+  name: String!
+  fullName: String!
+}
+
+type CloudEstate {
+  id: ID!
+  uuid: String!
+  name: String!
+  description: String!
+  federal: String!
+  cloudProvider: String!
+  federalEmailAddress: String!
+  cloudEstateCid: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+}
+
+input NewCloudEstate {
+  name: String!
+  description: String!
+  federal: String!
+  cloudProvider: String!
+  federalEmailAddress: String!
+  cloudEstateCid: String!
+}
+
+
+type CloudEstatePolicy {
+  id: ID!
+  uuid: String!
+  name: String!
+  description: String!
+  cloudEstate: String!
+  policyType: String!
+  policyCid: String!
+  policyJson: JSON!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+}
+
+input NewCloudEstatePolicyWithCid {
+  name: String!
+  description: String!
+  cloudEstate: String!
+  policyType: String!
+  policyCid: String!
+}
+
+input NewCloudEstatePolicyWithJson {
+  name: String!
+  description: String!
+  cloudEstate: String!
+  policyType: String!
+  policyJson: JSON!
+}
+
+
+
+
+
+
+
 type Resident {
   id: ID!
   name: String!
@@ -31,11 +130,6 @@ input NewResident {
   stageName: String!
 }
 
-type CloudProvider {
-  id: ID!
-  name: String!
-  rootCid: String!
-}
 
 type Class {
   id: ID!
@@ -57,14 +151,36 @@ type Client {
 }
 
 
-
-
-
 type Query {
+  
+  federals: [Federal!]!
+  federalByUUID(uuid: String!): Federal
+  federalByName(name: String!): Federal
+
+  
+  cloudProviders: [CloudProvider!]! 
+  cloudProviderByUUID(uuid: String!): CloudProvider
+  cloudProviderByName(name: String!): CloudProvider
+
+
+  cloudEstates: [CloudEstate!]! 
+  cloudEstateByUUID(uuid: String!): CloudEstate
+  cloudEstateByName(name: String!): CloudEstate
+
+
+  cloudEstatePolicys: [CloudEstatePolicy!]! 
+
   residents: [Resident!]!
 }
 
-
 type Mutation {
+  createFederal(input: NewFederal!): Federal!
+  createCloudProvider(input: NewCloudProvider!): CloudProvider!
+  createCloudEstate(input: NewCloudEstate!): CloudEstate!
+  createCloudEstatePolicyWithCid(input: NewCloudEstatePolicyWithCid!): CloudEstatePolicy!
+  createCloudEstatePolicyWithJson(input: NewCloudEstatePolicyWithJson!): CloudEstatePolicy!
+
   createResident(input: NewResident!): Resident!
+  
+
 }

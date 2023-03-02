@@ -1,0 +1,3 @@
+{
+    "tags": "{\"CostCenter\":{\"tag_key\":{\"@@assign\":\"CostCenter\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}},\"Project\":{\"tag_key\":{\"@@assign\":\"Project\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}}}"
+  }
