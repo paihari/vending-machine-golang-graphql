@@ -8,8 +8,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 drop table federals;
 CREATE TABLE federals (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT UNIQUE,
     full_name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -30,8 +30,8 @@ INSERT INTO federals(name, full_name) VALUES ('ASAP', 'Avaloq Sourcing AP');
 drop table cloud_providers;
 CREATE TABLE cloud_providers (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT  UNIQUE,
     full_name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -57,11 +57,11 @@ drop table cloud_estates;
 
 CREATE TABLE cloud_estates (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT UNIQUE,
     description TEXT,
-    federal TEXT,
-    cloud_provider TEXT,
+    federal TEXT REFERENCES federals(name),
+    cloud_provider TEXT REFERENCES cloud_providers(name),
     federal_email_address TEXT,
     -- CLOUD ESTATE ID IS THE TOP LEVEL ID EG ORGANIZATION ID IN WHICH CHILD ACCOUNTS/RESIDENTS ARE BREWED
     cloud_estate_cid TEXT, 
@@ -81,25 +81,25 @@ INSERT INTO cloud_estates(name, description, federal, cloud_provider, cloud_esta
 -- NEED TO BE APPLIED TO ALL RESIDENTS/CHILD ACCOUNTS
 -- EXAMPLE TAG POLICY
 
-drop table cloud_estate_policiys;
-CREATE TABLE cloud_estate_policiys (
+drop table cloud_estate_policies;
+CREATE TABLE cloud_estate_policies (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
+    uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT,
     description TEXT,
-    cloud_estate_id TEXT,
+    cloud_estate TEXT REFERENCES cloud_estates(name),
     policy_type TEXT,
     -- ARN of the POLICY CREATED by the Management Account
     policy_cid TEXT,
-    policy_json TEXT,
+    policy_json JSON,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_by TEXT,
     PRIMARY KEY(id)
-)
+);
 
-INSERT INTO cloud_estate_policiys(name, description, cloud_estate, policy_type, policy_cid, policy_json) VALUES ('AEVO-AWS-ESTATE-TAG', 'TAG POLICY FROM FEDERAL LEVEL', 'AEVO-AWS_ESTATE', 'TAG', '--ARN--', 'JSON');
+INSERT INTO cloud_estate_policies(name, description, cloud_estate, policy_type, policy_cid, policy_json) VALUES ('AEVO-AWS-ESTATE-TAG', 'TAG POLICY FROM FEDERAL LEVEL', 'AEVO-AWS_ESTATE', 'TAG', '--ARN--', 'JSON');
 
 -- EXAMPLE OF TAG JSON
 /* {
@@ -179,7 +179,7 @@ CREATE TABLE residents (
     universal_id uuid DEFAULT uuid_generate_v4 (),
     name VARCHAR(32) UNIQUE,
     description TEXT,
-    purchase_order_id TEXT,
+    purchase_order TEXT,
     email_address TEXT,
     client TEXT,
     cloud_provider TEXT,

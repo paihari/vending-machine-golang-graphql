@@ -12,12 +12,137 @@ import (
 	pg "github.com/go-pg/pg/v10"
 	"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
+	
 )
+
+// CreateFederal is the resolver for the createFederal field.
+func (r *mutationResolver) CreateFederal(ctx context.Context, input model.NewFederal) (*model.Federal, error) {
+	federal := model.Federal{
+		Name:     input.Name,
+		FullName: input.FullName,
+	}
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	_, error := db.Model(&federal).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Federal: %v", error)
+	}
+
+	return &federal, nil
+}
+
+// CreateCloudProvider is the resolver for the createCloudProvider field.
+func (r *mutationResolver) CreateCloudProvider(ctx context.Context, input model.NewCloudProvider) (*model.CloudProvider, error) {
+	cloudProvider := model.CloudProvider{
+		Name:     input.Name,
+		FullName: input.FullName,
+	}
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	_, error := db.Model(&cloudProvider).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Cloud Provider: %v", error)
+	}
+
+	return &cloudProvider, nil
+}
+
+// CreateCloudEstate is the resolver for the createCloudEstate field.
+func (r *mutationResolver) CreateCloudEstate(ctx context.Context, input model.NewCloudEstate) (*model.CloudEstate, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	federal := base.GetFederalByName(input.Federal, db)
+	cloudProvider := base.GetCloudProviderByName(input.CloudProvider, db)
+
+	cloudEstate := model.CloudEstate{
+		Name:                input.Name,
+		Description:         input.Description,
+		Federal:             federal.Name,
+		CloudProvider:       cloudProvider.Name,
+		FederalEmailAddress: input.FederalEmailAddress,
+		CloudEstateCid:      input.CloudEstateCid,
+	}
+
+	_, error := db.Model(&cloudEstate).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Cloud Estate: %v", error)
+	}
+
+	return &cloudEstate, nil
+}
+
+// CreateCloudEstatePolicyWithCid is the resolver for the createCloudEstatePolicyWithCid field.
+func (r *mutationResolver) CreateCloudEstatePolicyWithCid(ctx context.Context, input model.NewCloudEstatePolicyWithCid) (*model.CloudEstatePolicy, error) {
+	
+	db := base.GetDb()
+	defer db.Close()
+
+	cloudEstate := base.GetCloudEstateByName(input.CloudEstate, db)
+	fmt.Println(cloudEstate)
+
+	cloudEstatePolicy := model.CloudEstatePolicy{
+		Name:        input.Name,
+		Description: input.Description,
+		CloudEstate: cloudEstate.Name,
+		PolicyType:  input.PolicyType,
+		PolicyCid:   input.PolicyCid,
+	}
+
+	_, error := db.Model(&cloudEstatePolicy).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Cloud Estate Policy: %v", error)
+	}
+
+	return &cloudEstatePolicy, nil
+}
+
+// CreateCloudEstatePolicyWithJSON is the resolver for the createCloudEstatePolicyWithJson field.
+func (r *mutationResolver) CreateCloudEstatePolicyWithJSON(ctx context.Context, input model.NewCloudEstatePolicyWithJSON) (*model.CloudEstatePolicy, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	cloudEstate := base.GetCloudEstateByName(input.CloudEstate, db)
+
+	cloudEstatePolicy := model.CloudEstatePolicy{
+		Name:        input.Name,
+		Description: input.Description,
+		CloudEstate: cloudEstate.Name,
+		PolicyType:  input.PolicyType,
+		PolicyJSON:  input.PolicyJSON,
+	}
+
+	_, error := db.Model(&cloudEstatePolicy).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Cloud Estate Policy: %v", error)
+	}
+
+	return &cloudEstatePolicy, nil
+}
 
 // CreateResident is the resolver for the createResident field.
 func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error) {
-	
-	
 	db := base.GetDb()
 	defer db.Close()
 
@@ -53,11 +178,11 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 		Client:          client.Name,
 		CloudProvider:   cloudProvider.Name,
 		ResidentCid:     residentCid,
-		RootCid:         cloudProvider.RootCid,
-		Class:           class.Name,
-		Stage:           stage.Name,
-		CreatedBy:       createdBy,
-		UpdatedBy:       updatedBy,
+		//RootCid:         cloudProvider.RootCid,
+		Class:     class.Name,
+		Stage:     stage.Name,
+		CreatedBy: createdBy,
+		UpdatedBy: updatedBy,
 	}
 
 	_, error := db.Model(&resident).Insert()
@@ -67,6 +192,149 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 	}
 
 	return &resident, nil
+}
+
+// Federals is the resolver for the federals field.
+func (r *queryResolver) Federals(ctx context.Context) ([]*model.Federal, error) {
+	var federals []*model.Federal
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&federals).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return federals, nil
+}
+
+// FederalByUUID is the resolver for the federalByUUID field.
+func (r *queryResolver) FederalByUUID(ctx context.Context, uuid string) (*model.Federal, error) {
+	db := base.GetDb()
+	defer db.Close()
+	
+	federal := base.GetFederalByUUID(uuid, db)
+	return &federal, nil
+
+}
+
+// FederalByName is the resolver for the federalByName field.
+func (r *queryResolver) FederalByName(ctx context.Context, name string) (*model.Federal, error) {
+	db := base.GetDb()
+	defer db.Close()
+	
+	federal := base.GetFederalByName(name, db)
+	return &federal, nil
+}
+
+// CloudProviders is the resolver for the cloudProviders field.
+func (r *queryResolver) CloudProviders(ctx context.Context) ([]*model.CloudProvider, error) {
+	var cloudProviders []*model.CloudProvider
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&cloudProviders).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return cloudProviders, nil
+}
+
+// CloudProviderByUUID is the resolver for the cloudProviderByUUID field.
+func (r *queryResolver) CloudProviderByUUID(ctx context.Context, uuid string) (*model.CloudProvider, error) {
+	
+	db := base.GetDb()
+	defer db.Close()
+	
+	cloudProvider := base.GetCloudProviderByName(uuid, db)
+	return &cloudProvider, nil
+}
+
+// CloudProviderByName is the resolver for the cloudProviderByName field.
+func (r *queryResolver) CloudProviderByName(ctx context.Context, name string) (*model.CloudProvider, error) {
+	db := base.GetDb()
+	defer db.Close()
+	
+	cloudProvider := base.GetCloudProviderByName(name, db)
+	return &cloudProvider, nil
+
+}
+
+// CloudEstates is the resolver for the cloudEstates field.
+func (r *queryResolver) CloudEstates(ctx context.Context) ([]*model.CloudEstate, error) {
+	var cloudEstates []*model.CloudEstate
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&cloudEstates).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return cloudEstates, nil
+}
+
+// CloudEstateByUUID is the resolver for the cloudEstateByUUID field.
+func (r *queryResolver) CloudEstateByUUID(ctx context.Context, uuid string) (*model.CloudEstate, error) {
+	db := base.GetDb()
+	defer db.Close()
+	
+	cloudEstate := base.GetCloudEstateByUUID(uuid, db)
+	return &cloudEstate, nil
+}
+
+
+
+// CloudEstateByName is the resolver for the cloudEstateByName field.
+func (r *queryResolver) CloudEstateByName(ctx context.Context, name string) (*model.CloudEstate, error) {
+	db := base.GetDb()
+	defer db.Close()
+	
+	cloudEstate := base.GetCloudEstateByName(name, db)
+	return &cloudEstate, nil
+}
+
+// CloudEstatePolicys is the resolver for the cloudEstatePolicys field.
+func (r *queryResolver) CloudEstatePolicys(ctx context.Context) ([]*model.CloudEstatePolicy, error) {
+	var cloudEstatePolicys []*model.CloudEstatePolicy
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&cloudEstatePolicys).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return nil, nil
 }
 
 // Residents is the resolver for the residents field.
