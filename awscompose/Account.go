@@ -54,8 +54,8 @@ func CreateResidentAccount(accountName string, emailAddress string) (string, err
 		return "", fmt.Errorf("error loading AWS config: %w", err)
 	}
 
-	// accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
-    // secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+	//accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
+    //secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
 
 
