@@ -149,19 +149,18 @@ input NewStage {
 
 
 
-
-
-
 type Resident {
   id: ID!
+  uuid: String
   name: String!
   description: String!
-  purchaseOrderId: String!
+  purchaseOrder: String!
   emailAddress: String!
   client: String!
   cloudProvider: String!
   residentCid: String!
-  rootCid: String!
+  cloudEstate: String!
+  cloudEstateCid: String!
   class: String!
   stage: String!
   createdAt: String!
@@ -173,15 +172,13 @@ type Resident {
 input NewResident {
   name: String!
   description: String!
-  purchaseOrderId: String!
+  purchaseOrder: String!
   emailAddress: String!
-  clientName: String!
-  cloudProviderName: String!
-  className: String!
-  stageName: String!
+  cloudEstate: String
+  client: String!
+  class: String!
+  stage: String!
 }
-
-
 
 type Query {
   
@@ -216,6 +213,9 @@ type Query {
 
 
   residents: [Resident!]!
+  residentByName(name: String!): Resident
+  residentByUUID(uuid: String!): Resident
+
 }
 
 type Mutation {

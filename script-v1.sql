@@ -64,7 +64,7 @@ CREATE TABLE cloud_estates (
     cloud_provider TEXT REFERENCES cloud_providers(name),
     federal_email_address TEXT,
     -- CLOUD ESTATE ID IS THE TOP LEVEL ID EG ORGANIZATION ID IN WHICH CHILD ACCOUNTS/RESIDENTS ARE BREWED
-    cloud_estate_cid TEXT, 
+    cloud_estate_cid TEXT UNIQUE, 
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -118,11 +118,11 @@ INSERT INTO cloud_estate_policies(name, description, cloud_estate, policy_type, 
 
 
 
-drop table clients
+drop table clients;
 CREATE TABLE clients (
     id SERIAL,
     uuid uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    name TEXT UNIQUE,
     full_name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -141,7 +141,7 @@ drop table classes;
 CREATE TABLE classes (
     id SERIAL,
     uuid uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    name TEXT UNIQUE,
     description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -156,35 +156,12 @@ INSERT INTO classes(name, description) VALUES ('payg', 'Provisioning resources i
 INSERT INTO classes(name, description) VALUES ('commit', 'The service budget is planned ahead and resources are accounted against a credit commitment.');
 
 
-
-
-drop table sptages;
-
-CREATE TABLE sptages (
-    id SERIAL,
-    uuid uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
-    description TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by TEXT,
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_by TEXT,
-    PRIMARY KEY(id)
-);
-
-INSERT INTO sptages(name, description) VALUES ('development', 'The service is still under development.');
-INSERT INTO sptages(name, description) VALUES ('uat', 'The service is in user acceptance testing, data is not persisted.');
-INSERT INTO sptages(name, description) VALUES ('production', 'The service is in production and has to comply with the securty and compliance guidelines.');
-
-
-
-
 drop table stages;
 
 CREATE TABLE stages (
     id SERIAL,
     uuid uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    name TEXT UNIQUE,
     description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -198,23 +175,23 @@ INSERT INTO stages(name, description) VALUES ('uat', 'The service is in user acc
 INSERT INTO stages(name, description) VALUES ('production', 'The service is in production and has to comply with the securty and compliance guidelines.');
 
 
--- ENTRIES BY VENDING MACHINE PROGRAM
-
+drop table residents;
 CREATE TABLE residents (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
+    uuid uuid DEFAULT uuid_generate_v4 (),
     name VARCHAR(32) UNIQUE,
     description TEXT,
     purchase_order TEXT,
     email_address TEXT,
-    client TEXT,
-    cloud_provider TEXT,
+    client TEXT REFERENCES clients(name),
+    cloud_provider TEXT REFERENCES cloud_providers(name),
     -- CHILD ACCOUNT ID EG AWS
     resident_cid TEXT,
     -- ORGANIZATION ID/CLOUD ESTATE CID
-    cloud_estate_cid TEXT, 
-    class TEXT,
-    stage TEXT,
+    cloud_estate TEXT REFERENCES cloud_estates(name),
+    cloud_estate_cid TEXT REFERENCES cloud_estates(cloud_estate_cid), 
+    class TEXT REFERENCES classes(name),
+    stage TEXT REFERENCES stages(name),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

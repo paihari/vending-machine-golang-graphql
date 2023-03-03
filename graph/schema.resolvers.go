@@ -7,9 +7,11 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/paihari/vending-machine-golang-graphql/awscompose"
 	"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
 )
@@ -154,7 +156,6 @@ func (r *mutationResolver) CreateClient(ctx context.Context, input model.NewClie
 	if error != nil {
 		return nil, fmt.Errorf("error inserting new Client : %v", error)
 	}
-
 	return &client, nil
 }
 
@@ -194,7 +195,6 @@ func (r *mutationResolver) CreateStage(ctx context.Context, input model.NewStage
 	}
 
 	return &stage, nil
-
 }
 
 // CreateResident is the resolver for the createResident field.
@@ -202,43 +202,41 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 	db := base.GetDb()
 	defer db.Close()
 
-	//stage := base.GetStageByName(input.StageName, db)
-	// var stage model.Stage
-	// db.Model(&stage).Where("name = ?", input.StageName).Select()
+	cloudEstate := base.GetCloudEstateByName(*input.CloudEstate, db)
+	cloudProvider := base.GetCloudProviderByName(cloudEstate.CloudProvider, db)
+	client := base.GetClientByName(input.Client, db)
 
-	client := base.GetClientByName(input.ClientName, db)
+	stage := base.GetStageByName(input.Stage, db)
 
-	cloudProvider := base.GetCloudProviderByName(input.CloudProviderName, db)
-
-	//class := base.GetClassByName(input.ClassName, db)
-	var class model.Class
-	db.Model(&class).Where("name = ?", input.ClassName).Select()
+	class := base.GetClassByName(input.Class, db)
 
 	var createdBy, updatedBy string
 	createdBy = "VEND"
 	updatedBy = "VEND"
 
-	// residentCid, err := awscompose.CreateResidentAccount(input.Name, input.EmailAddress)
-	// if err != nil {
-	// 	log.Fatalf("Unable to retrieve labels: %v", err)
-	// 	return nil, err
-	// }
+	residentCid, err := awscompose.CreateResidentAccount(input.Name, input.EmailAddress)
+	if err != nil {
 
-	residentCid := "SOME CID"
+		log.Fatalf("Unable to Create Resident/account %v", err)
+		return nil, err
+	}
+
+	//residentCid := "SOME CID"
 
 	resident := model.Resident{
-		Name:            input.Name,
-		Description:     input.Description,
-		PurchaseOrderID: input.PurchaseOrderID,
-		EmailAddress:    input.EmailAddress,
-		Client:          client.Name,
-		CloudProvider:   cloudProvider.Name,
-		ResidentCid:     residentCid,
-		//RootCid:         cloudProvider.RootCid,
-		Class: class.Name,
-		//Stage:     stage.Name,
-		CreatedBy: createdBy,
-		UpdatedBy: updatedBy,
+		Name:           input.Name,
+		Description:    input.Description,
+		PurchaseOrder:  input.PurchaseOrder,
+		EmailAddress:   input.EmailAddress,
+		Client:         client.Name,
+		CloudProvider:  cloudProvider.Name,
+		ResidentCid:    residentCid,
+		CloudEstate:    cloudEstate.Name,
+		CloudEstateCid: cloudEstate.CloudEstateCid,
+		Class:          class.Name,
+		Stage:          stage.Name,
+		CreatedBy:      createdBy,
+		UpdatedBy:      updatedBy,
 	}
 
 	_, error := db.Model(&resident).Insert()
@@ -524,6 +522,16 @@ func (r *queryResolver) Residents(ctx context.Context) ([]*model.Resident, error
 	}
 
 	return residents, nil
+}
+
+// ResidentByName is the resolver for the residentByName field.
+func (r *queryResolver) ResidentByName(ctx context.Context, name string) (*model.Resident, error) {
+	panic(fmt.Errorf("not implemented: ResidentByName - residentByName"))
+}
+
+// ResidentByUUID is the resolver for the residentByUUID field.
+func (r *queryResolver) ResidentByUUID(ctx context.Context, uuid string) (*model.Resident, error) {
+	panic(fmt.Errorf("not implemented: ResidentByUUID - residentByUUID"))
 }
 
 // Mutation returns MutationResolver implementation.
