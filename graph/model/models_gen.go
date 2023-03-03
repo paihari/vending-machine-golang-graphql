@@ -4,14 +4,24 @@ package model
 
 type Class struct {
 	ID          string `json:"id"`
+	UUID        string `json:"uuid"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	CreatedAt   string `json:"createdAt"`
+	CreatedBy   string `json:"createdBy"`
+	UpdatedAt   string `json:"updatedAt"`
+	UpdatedBy   string `json:"updatedBy"`
 }
 
 type Client struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	FullName string `json:"fullName"`
+	ID        string `json:"id"`
+	UUID      string `json:"uuid"`
+	Name      string `json:"name"`
+	FullName  string `json:"fullName"`
+	CreatedAt string `json:"createdAt"`
+	CreatedBy string `json:"createdBy"`
+	UpdatedAt string `json:"updatedAt"`
+	UpdatedBy string `json:"updatedBy"`
 }
 
 type CloudEstate struct {
@@ -66,6 +76,16 @@ type Federal struct {
 	UpdatedBy string `json:"updatedBy"`
 }
 
+type NewClass struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type NewClient struct {
+	Name     string `json:"name"`
+	FullName string `json:"fullName"`
+}
+
 type NewCloudEstate struct {
 	Name                string `json:"name"`
 	Description         string `json:"description"`
@@ -112,6 +132,11 @@ type NewResident struct {
 	StageName         string `json:"stageName"`
 }
 
+type NewStage struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
 type Resident struct {
 	ID              string `json:"id"`
 	Name            string `json:"name"`
@@ -132,6 +157,11 @@ type Resident struct {
 
 type Stage struct {
 	ID          string `json:"id"`
+	UUID        string `json:"uuid"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	CreatedAt   string `json:"createdAt"`
+	CreatedBy   string `json:"createdBy"`
+	UpdatedAt   string `json:"updatedAt"`
+	UpdatedBy   string `json:"updatedBy"`
 }

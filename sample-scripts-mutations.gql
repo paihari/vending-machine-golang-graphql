@@ -73,15 +73,46 @@ mutation createCloudEstatePolicy($tags: JSON!) {
   "tags": "{\"CostCenter\":{\"tag_key\":{\"@@assign\":\"CostCenter\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}},\"Project\":{\"tag_key\":{\"@@assign\":\"Project\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}}}"
 }
 
+mutation createClient{
+  createClient(input: {
+    name: "DEPOBANK"
+    fullName: "Depot Bank"
+    
+  }) {
+    id,
+    uuid
+    
+  }
+}
 
+mutation createStage{
+  createStage(input: {
+    name: "uat"
+    description: "The service is in user acceptance testing, data is not persisted."
+    
+  }) {
+    id,
+    uuid
+    
+  }
+}
 
-
-
-
-
+mutation createClass{
+  createClass(input: {
+    name: "trial"
+    description: "The service represents a sponsored proof-of-concept and has to abide to budget restrictions."
+    
+  }) {
+    id,
+    uuid
+    
+  }
+}
 
 
 ---
+
+
 
 query cloudEstate {
   cloudEstateByUUID(uuid: "ce95105a-9e7c-4e78-8082-d503f95c4b4f") {

@@ -43,6 +43,42 @@ func GetClientByName(clientName string, db *pg.DB ) model.Client {
 	return client
 }
 
+func GetClientByUUID(uuid string, db *pg.DB ) model.Client {
+
+	var client model.Client
+	db.Model(&client).Where("uuid = ?", uuid).Select()
+	return client
+}
+
+func GetClassByName(className string, db *pg.DB ) model.Class {
+
+	var class model.Class
+	db.Model(&class).Where("name = ?", className).Select()
+	return class
+}
+
+func GetClassByUUID(uuid string, db *pg.DB ) model.Class {
+
+	var class model.Class
+	db.Model(&class).Where("uuid = ?", uuid).Select()
+	return class
+}
+
+func GetStageByName(stageName string, db *pg.DB) model.Stage {
+
+	var stage model.Stage
+	db.Model(&stage).Where("name = ?", stageName).Select()
+	return stage
+}
+
+func GetStageByUUID(uuid string, db *pg.DB) model.Stage {
+
+	var stage model.Stage
+	db.Model(&stage).Where("uuid = ?", uuid).Select()
+	return stage
+}
+
+
 func GetCloudProviderByName(cloudProviderName string, db *pg.DB) model.CloudProvider {
 
 	var cloudProvider model.CloudProvider
@@ -57,21 +93,6 @@ func GetCloudProviderByUUID(uuid string, db *pg.DB) model.CloudProvider {
 	return cloudProvider
 }
 
-
-
-func GetClassByName(className string, db *pg.DB) model.Class {
-
-	var class model.Class
-	db.Model(&class).Where("name = ?", class).Select()
-	return class
-}
-
-func GetStageByName(stageName string, db *pg.DB) model.Stage {
-
-	var stage model.Stage
-	db.Model(&stage).Where("name = ?", stage).Select()
-	return stage
-}
 
 func GetDb() *pg.DB {
 

@@ -24,3 +24,43 @@ query cloudEstate {
    name
  }
 }
+
+query clients {
+  clients{
+    id,
+    uuid,
+    name
+  }
+}
+
+query clientByName {
+	clientByName(name: "AEVO") {
+    id
+    uuid
+  }
+}
+
+
+
+query clientByUUID {
+	clientByUUID(uuid: "7298a78e-a7e3-43b7-9046-ec67680ddea2") {
+    id
+    uuid
+  }
+}
+
+query classByUUID {
+  classByUUID(uuid: "08a51676-dc4d-44c3-a551-6971c95d09ec") {
+    id
+    uuid
+  }
+}
+
+query stageByName {
+  stageByName(name: "development") {
+    id
+    uuid
+  }
+}
+
+

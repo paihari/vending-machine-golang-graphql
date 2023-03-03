@@ -116,10 +116,12 @@ INSERT INTO cloud_estate_policies(name, description, cloud_estate, policy_type, 
 }
  */
 
+
+
 drop table clients
 CREATE TABLE clients (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
+    uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT,
     full_name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -135,9 +137,10 @@ INSERT INTO clients(name, full_name) VALUES ('ASAP', 'Avaloq Sourcing AP');
 INSERT INTO clients(name, full_name) VALUES ('APLH', 'Aplha Bank AG');
 
 
+drop table classes;
 CREATE TABLE classes (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
+    uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT,
     description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -155,9 +158,11 @@ INSERT INTO classes(name, description) VALUES ('commit', 'The service budget is 
 
 
 
-CREATE TABLE stages (
+drop table sptages;
+
+CREATE TABLE sptages (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
+    uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT,
     description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -165,7 +170,28 @@ CREATE TABLE stages (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_by TEXT,
     PRIMARY KEY(id)
-)
+);
+
+INSERT INTO sptages(name, description) VALUES ('development', 'The service is still under development.');
+INSERT INTO sptages(name, description) VALUES ('uat', 'The service is in user acceptance testing, data is not persisted.');
+INSERT INTO sptages(name, description) VALUES ('production', 'The service is in production and has to comply with the securty and compliance guidelines.');
+
+
+
+
+drop table stages;
+
+CREATE TABLE stages (
+    id SERIAL,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT,
+    description TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_by TEXT,
+    PRIMARY KEY(id)
+);
 
 INSERT INTO stages(name, description) VALUES ('development', 'The service is still under development.');
 INSERT INTO stages(name, description) VALUES ('uat', 'The service is in user acceptance testing, data is not persisted.');
