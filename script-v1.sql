@@ -48,7 +48,8 @@ INSERT INTO cloud_providers(name, full_name) VALUES ('AZURE', 'Microsoft Azure')
 
 -- CLOUD ESTATES
 -- This are relation of the Federals at the heighest Level
--- Equivalent to AWS Organization
+-- Management Account to Accomodate Resident
+-- Equivalent to AWS Organization/OCI Parent Tenency
 -- Federals can have multiple Cloud Estates with Cloud Providers
 -- Though it is understood, it may be single or couple of estates for each Federal entries
 
@@ -173,6 +174,14 @@ CREATE TABLE stages (
 INSERT INTO stages(name, description) VALUES ('development', 'The service is still under development.');
 INSERT INTO stages(name, description) VALUES ('uat', 'The service is in user acceptance testing, data is not persisted.');
 INSERT INTO stages(name, description) VALUES ('production', 'The service is in production and has to comply with the securty and compliance guidelines.');
+
+
+-- RESIDENTS TABLE HOLDS MULTIPLE RESIDENT IN THE SPECIFIED CLOUD ESTATE
+-- BUSINESS WISE IT HOLDS AWS CHILD ACCOUNTS/ OCI COMPARTMENTS WHERE THE WHOLE ECO-SYSTEM CAN BE BUILT
+-- THE CLOUD ESTATE WHERE THE RESIDENT LIVES IS THE UNDERSTANDING BETWEEN THE FEDERAL AND CLOUD PROVIDER
+-- THE POLICIES DECTATED BY FEDERAL LEVEL
+-- NEED TO BE APPLIED TO ALL RESIDENTS/CHILD ACCOUNTS
+-- EXAMPLE TAG POLICY
 
 
 drop table residents;

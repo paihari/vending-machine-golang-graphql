@@ -1,0 +1,13 @@
+Bantwal
+
+Create Governance Rules
+
+
+Create Tenency
+Add Governance Rules
+
+OCI Compartment --> AWS Resource Group
+
+
+OCI tenancy --> AWS Account
+
