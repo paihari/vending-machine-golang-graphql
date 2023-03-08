@@ -2,43 +2,55 @@ package main
 
 import (
 	"context"
-	
 	"fmt"
-	
-	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/service/organizations"
-	
-
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/iam"
 )
 
+func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKey, childAccountID, childRegion, childUserName string) error {
+    // Create a new session using the management account's access key ID and secret access key
+    cfg, err := config.LoadDefaultConfig(context.TODO(),
+        config.WithRegion(childRegion),
+        config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+            managementAccessKeyID,
+            managementSecretAccessKey,
+            "",
+        )),
+    )
+    if err != nil {
+        return err
+    }
 
-func main1() {
+    // Create an IAM client for the child account
+    svc := iam.NewFromConfig(cfg)
 
-	cfg, err := config.LoadDefaultConfig(context.Background())
-	if err != nil {
-		fmt.Println("Error loading the Config")
-		return
-	}
+    // Create a new IAM user in the child account
+    user, err := svc.CreateUser(context.TODO(), &iam.CreateUserInput{
+        UserName: aws.String(childUserName),
+    })
+    if err != nil {
+        return err
+    }
 
-	//emailAddress := "pai2023022403@pai.ch"
+	fmt.Println("User")
+	fmt.Println(user)
 
-	// Create Organizations client
-	svc := organizations.NewFromConfig(cfg)
+    // // Attach a policy to the IAM user
+    // _, err = svc.AttachUserPolicy(context.TODO(), &iam.AttachUserPolicyInput{
+    //     PolicyArn: aws.String("arn:aws:iam::aws:policy/ReadOnlyAccess"),
+    //     UserName:  aws.String(childUserName),
+    // })
+    // if err != nil {
+    //     return err
+    // }
 
-	arn := "arn:aws:organizations::898024814010:policy/o-py48lgs0w1/tag_policy/p-953m46re9l"
-	parts := strings.Split(arn, "/")
-	policyID := parts[len(parts)-1] // 12345678-abcd-1234-abcd-123456789012
-	childAccountId := "161987549706"
+    return nil
+}
 
-
-	_, err = svc.AttachPolicy(context.TODO(), &organizations.AttachPolicyInput{
-		PolicyId: &policyID,
-		TargetId: &childAccountId,
-	})
-
-	fmt.Println("Policy attached successfully to child account.")
-
-
+func main() {
+  err := createIAMUserInChildAccount("AKIA5CFTTGW5M2ZUHTJX", "j5S4H4x/S5NfXDmqmrMZrwQc1Q6EMw3m2lSijcUx", "161987549706", "us-east-1", "cloud-control-iam-user")
+  fmt.Println(err)
 }
