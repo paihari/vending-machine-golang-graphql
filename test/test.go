@@ -8,6 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
+    "github.com/aws/aws-sdk-go-v2/service/sts"
+
 )
 
 func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKey, childAccountID, childRegion, childUserName string) error {
@@ -23,6 +25,24 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
     if err != nil {
         return err
     }
+
+    // Assume a role in the child account
+    stsClient := sts.NewFromConfig(cfg)
+    assumeRoleOutput, err := stsClient.AssumeRole(context.TODO(), &sts.AssumeRoleInput{
+        RoleArn:         aws.String("arn:aws:iam::161987549706:role/OrganizationAccountAccessRole"),
+        RoleSessionName: aws.String("mysession"),
+    })
+    if err != nil {
+        return err
+    }
+
+    // Create a new session using the temporary credentials from the AssumeRole output
+    cfg.Credentials = credentials.NewStaticCredentialsProvider(
+        *assumeRoleOutput.Credentials.AccessKeyId,
+        *assumeRoleOutput.Credentials.SecretAccessKey,
+        *assumeRoleOutput.Credentials.SessionToken,
+    )
+
 
     // Create an IAM client for the child account
     svc := iam.NewFromConfig(cfg)

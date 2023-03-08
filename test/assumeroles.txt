@@ -1,0 +1,16 @@
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user.html?icmpid=docs_iam_console
+
+https://docs.aws.amazon.com/signin/latest/userguide/console_account-alias.html?icmpid=docs_iam_console#FindingYourAWSId
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-console.html?icmpid=docs_iam_console
+
+
+
+
+IMP https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_accounts_access.html#orgs_manage_accounts_access-cross-account-role
+
+https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_principal.html#principal-roles
+
+
+
+https://n2ws.com/blog/aws-cloud/managing-aws-accounts-cross-account-iam-roles#:~:text=A%20Cross%2Daccount%20IAM%20Role,defined%20role%20to%20do%20so.
