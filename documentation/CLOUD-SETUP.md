@@ -30,12 +30,6 @@ go run ./server.go
 
 ![](./documentation/images/sample-playground.png)
 
-### Presetup/Pre-requisites
-
-* [Cloud Setup](https://github.com/matiassingers/awesome-readme)
-
-
-
 
 ## Help
 
