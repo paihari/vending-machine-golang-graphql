@@ -26,11 +26,9 @@ go run ./server.go
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
+* Connect to http://localhost:8080/ for GraphQL playground
+
+
 
 ## Help
 
