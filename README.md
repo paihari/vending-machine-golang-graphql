@@ -32,7 +32,7 @@ go run ./server.go
 
 ### Presetup/Pre-requisites
 
-* [Cloud Setup](https://github.com/matiassingers/awesome-readme)
+* [Cloud Setup](./documentation/CLOUD-SETUP.md)
 
 
 
