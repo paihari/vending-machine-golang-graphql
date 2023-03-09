@@ -18,9 +18,8 @@ CREATE TABLE federals (
     PRIMARY KEY(id)
 );
 
-INSERT INTO federals(name, full_name) VALUES ('AEVO', 'Avaloq Evolution');
-INSERT INTO federals(name, full_name) VALUES ('ASSL', 'Avaloq Sourcing CH');
-INSERT INTO federals(name, full_name) VALUES ('ASAP', 'Avaloq Sourcing AP');
+INSERT INTO federals(name, full_name) VALUES ('AGRO', 'Avaloq Group');
+
 
 -- CLOUD_PROVIDERS
 -- List of Cloud Providers
@@ -61,8 +60,8 @@ CREATE TABLE cloud_estates (
     uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT UNIQUE,
     description TEXT,
-    federal TEXT REFERENCES federals(name),
-    cloud_provider TEXT REFERENCES cloud_providers(name),
+    federal TEXT REFERENCES federals(name) ON DELETE CASCADE,
+    cloud_provider TEXT REFERENCES cloud_providers(name) ON DELETE CASCADE,
     federal_email_address TEXT,
     -- CLOUD ESTATE ID IS THE TOP LEVEL ID EG ORGANIZATION ID IN WHICH CHILD ACCOUNTS/RESIDENTS ARE BREWED
     cloud_estate_cid TEXT UNIQUE, 
