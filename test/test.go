@@ -8,20 +8,26 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-    "github.com/aws/aws-sdk-go-v2/service/sts"
-
+	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/paihari/vending-machine-golang-graphql/base"
+	"github.com/paihari/vending-machine-golang-graphql/graph/base"
 )
 
 func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKey, childAccountID, childRegion, childUserName string) error {
     // Create a new session using the management account's access key ID and secret access key
-    cfg, err := config.LoadDefaultConfig(context.TODO(),
-        config.WithRegion(childRegion),
-        config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-            managementAccessKeyID,
-            managementSecretAccessKey,
-            "",
-        )),
-    )
+
+    cfg, err := base.GetAwsCredenctialConfig()
+
+    // cfg, err := config.LoadDefaultConfig(context.TODO(),
+    //     config.WithRegion(childRegion),
+    //     config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+    //         managementAccessKeyID,
+    //         managementSecretAccessKey,
+    //         "",
+    //     )),
+    // )
+
+    
     if err != nil {
         return err
     }
