@@ -71,6 +71,6 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
 }
 
 func main() {
-  err := createIAMUserInChildAccount("AKIA5CFTTGW5M2ZUHTJX", "j5S4H4x/S5NfXDmqmrMZrwQc1Q6EMw3m2lSijcUx", "161987549706", "us-east-1", "cloud-control-iam-user")
+  err := createIAMUserInChildAccount("AKIA5CFTTGW5KMWLEPNA", "X6kD43V3oj65wgE5CDQT02TWbiln3EYf+jpClggN", "161987549706", "us-east-1", "cloud-control-iam-user")
   fmt.Println(err)
 }
