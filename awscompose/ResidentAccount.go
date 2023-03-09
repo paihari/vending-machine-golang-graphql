@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"time"
 	"strings"
+	//"os"
+	
 
 	"github.com/aws/aws-sdk-go-v2/config"
+	//"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
 	"github.com/aws/aws-sdk-go-v2/service/organizations/types"
 
@@ -44,13 +47,26 @@ func AttachFederationTagPolicyToResidentAccount() {
 
 
 func CreateResidentAccount(accountName string, emailAddress string) (string, error) {
-	// Load AWS config
+
+	//Load AWS config
 	cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
 		return "", fmt.Errorf("error loading AWS config: %w", err)
 	}
 
-	//emailAddress := "pai2023022403@pai.ch"
+	//accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
+    //secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+
+
+
+    // Create a new static credentials provider
+    // creds := credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")
+
+    // // Load AWS config with the new credentials provider
+    // cfg, err := config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(creds))
+    // if err != nil {
+    //     return "", fmt.Errorf("error loading AWS config: %w", err)
+    // }
 
 	// Create Organizations client
 	svc := organizations.NewFromConfig(cfg)
@@ -61,7 +77,14 @@ func CreateResidentAccount(accountName string, emailAddress string) (string, err
         Email:        &emailAddress,
         IamUserAccessToBilling: "DENY",
     })
-	
+
+	if err != nil {
+		// Handle the error appropriately
+		fmt.Println("Printing Error")
+		fmt.Println(err)
+		return "", fmt.Errorf("error describing create account status: %w", err)
+	}
+
 	// Retrieve the account creation request ID
 	createAccountRequestId := createAccountResult.CreateAccountStatus.Id
 

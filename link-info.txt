@@ -137,3 +137,17 @@ query cloudEstate {
     name @export(as: "_name")
   }
 }
+
+
+docker run -e AWS_ACCESS_KEY_ID=<access_key> -e AWS_SECRET_ACCESS_KEY=<secret_key> my-image
+
+
+import "os"
+
+func main() {
+    accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
+    secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
+
+    // Use the access key and secret key to access AWS services
+    // ...
+}

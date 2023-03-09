@@ -48,7 +48,8 @@ INSERT INTO cloud_providers(name, full_name) VALUES ('AZURE', 'Microsoft Azure')
 
 -- CLOUD ESTATES
 -- This are relation of the Federals at the heighest Level
--- Equivalent to AWS Organization
+-- Management Account to Accomodate Resident
+-- Equivalent to AWS Organization/OCI Parent Tenency
 -- Federals can have multiple Cloud Estates with Cloud Providers
 -- Though it is understood, it may be single or couple of estates for each Federal entries
 
@@ -64,7 +65,7 @@ CREATE TABLE cloud_estates (
     cloud_provider TEXT REFERENCES cloud_providers(name),
     federal_email_address TEXT,
     -- CLOUD ESTATE ID IS THE TOP LEVEL ID EG ORGANIZATION ID IN WHICH CHILD ACCOUNTS/RESIDENTS ARE BREWED
-    cloud_estate_cid TEXT, 
+    cloud_estate_cid TEXT UNIQUE, 
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -116,11 +117,13 @@ INSERT INTO cloud_estate_policies(name, description, cloud_estate, policy_type, 
 }
  */
 
-drop table clients
+
+
+drop table clients;
 CREATE TABLE clients (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT UNIQUE,
     full_name TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -135,10 +138,11 @@ INSERT INTO clients(name, full_name) VALUES ('ASAP', 'Avaloq Sourcing AP');
 INSERT INTO clients(name, full_name) VALUES ('APLH', 'Aplha Bank AG');
 
 
+drop table classes;
 CREATE TABLE classes (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT UNIQUE,
     description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
@@ -153,42 +157,50 @@ INSERT INTO classes(name, description) VALUES ('payg', 'Provisioning resources i
 INSERT INTO classes(name, description) VALUES ('commit', 'The service budget is planned ahead and resources are accounted against a credit commitment.');
 
 
-
+drop table stages;
 
 CREATE TABLE stages (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
-    name TEXT,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT UNIQUE,
     description TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_by TEXT,
     PRIMARY KEY(id)
-)
+);
 
 INSERT INTO stages(name, description) VALUES ('development', 'The service is still under development.');
 INSERT INTO stages(name, description) VALUES ('uat', 'The service is in user acceptance testing, data is not persisted.');
 INSERT INTO stages(name, description) VALUES ('production', 'The service is in production and has to comply with the securty and compliance guidelines.');
 
 
--- ENTRIES BY VENDING MACHINE PROGRAM
+-- RESIDENTS TABLE HOLDS MULTIPLE RESIDENT IN THE SPECIFIED CLOUD ESTATE
+-- BUSINESS WISE IT HOLDS AWS CHILD ACCOUNTS/ OCI COMPARTMENTS WHERE THE WHOLE ECO-SYSTEM CAN BE BUILT
+-- THE CLOUD ESTATE WHERE THE RESIDENT LIVES IS THE UNDERSTANDING BETWEEN THE FEDERAL AND CLOUD PROVIDER
+-- THE POLICIES DECTATED BY FEDERAL LEVEL
+-- NEED TO BE APPLIED TO ALL RESIDENTS/CHILD ACCOUNTS
+-- EXAMPLE TAG POLICY
 
+
+drop table residents;
 CREATE TABLE residents (
     id SERIAL,
-    universal_id uuid DEFAULT uuid_generate_v4 (),
+    uuid uuid DEFAULT uuid_generate_v4 (),
     name VARCHAR(32) UNIQUE,
     description TEXT,
     purchase_order TEXT,
     email_address TEXT,
-    client TEXT,
-    cloud_provider TEXT,
+    client TEXT REFERENCES clients(name),
+    cloud_provider TEXT REFERENCES cloud_providers(name),
     -- CHILD ACCOUNT ID EG AWS
     resident_cid TEXT,
     -- ORGANIZATION ID/CLOUD ESTATE CID
-    cloud_estate_cid TEXT, 
-    class TEXT,
-    stage TEXT,
+    cloud_estate TEXT REFERENCES cloud_estates(name),
+    cloud_estate_cid TEXT REFERENCES cloud_estates(cloud_estate_cid), 
+    class TEXT REFERENCES classes(name),
+    stage TEXT REFERENCES stages(name),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     created_by TEXT,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),

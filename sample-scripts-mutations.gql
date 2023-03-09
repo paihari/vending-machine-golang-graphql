@@ -73,53 +73,59 @@ mutation createCloudEstatePolicy($tags: JSON!) {
   "tags": "{\"CostCenter\":{\"tag_key\":{\"@@assign\":\"CostCenter\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}},\"Project\":{\"tag_key\":{\"@@assign\":\"Project\",\"@@operators_allowed_for_child_policies\":[\"@@none\"]}}}"
 }
 
-
-
-
-
-
-
-
-
----
-
-query cloudEstate {
-  cloudEstateByUUID(uuid: "ce95105a-9e7c-4e78-8082-d503f95c4b4f") {
-    name
-  }
-}
-
-mutation createCloudEstatePolicy($name: String!) {
-  createCloudEstatePolicyWithCid(input: {
-    name: "TAG-POLICY-FOR-AEVO-AWS"
-    description: "Federal Tag Policy for AEVEO and AWS"
-    cloudEstate: $name
-    policyType: "TAG"
-    policyCid: "POLICYARN"
+mutation createClient{
+  createClient(input: {
+    name: "DEPOBANK"
+    fullName: "Depot Bank"
     
   }) {
+    id,
     uuid
+    
   }
 }
-----
 
-
-
-
-
-
-
-mutation createResident{
-  createResident(input: {
-    name: "AEVO-AWS-FREE"
-    description: "AEVO RESIDENT"
-    cloudProviderName: "AWS"
-    purchaseOrderId: "PO-NO"
-    clientName: "AEVO"
-    className: "free"
-    stageName: "development"
+mutation createStage{
+  createStage(input: {
+    name: "uat"
+    description: "The service is in user acceptance testing, data is not persisted."
+    
   }) {
-    residentCid
+    id,
+    uuid
+    
+  }
+}
+
+mutation createClass{
+  createClass(input: {
+    name: "trial"
+    description: "The service represents a sponsored proof-of-concept and has to abide to budget restrictions."
+    
+  }) {
+    id,
+    uuid
+    
+  }
+}
+
+
+mutation createResident {
+  createResident(input: {
+    name: "AEVO-AWS-AP-VEND1",
+    description: "The Vending MAchine"
+    purchaseOrder: "PONO"
+    emailAddress: "cloudcontrol.ap@gmail.com"
+    client: "AEVO"
+    cloudEstate: "AEVO-AWS-ESTATE"
+    class: "free"
+    stage: "uat"
+    
+  }
+  ) {
+    id
+    uuid
+    cloudEstateCid
   }
 }
 

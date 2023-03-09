@@ -95,22 +95,72 @@ input NewCloudEstatePolicyWithJson {
   policyJson: JSON!
 }
 
+type Client {
+  id: ID!
+  uuid: String!
+  name: String!
+  fullName: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+}
+
+input NewClient {
+  name: String!
+  fullName: String!
+}
 
 
+type Class {
+  id: ID!
+  uuid: String!
+  name: String!
+  description: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
 
+}
+
+input NewClass {
+  name: String!
+  description: String!
+}
+
+type Stage {
+  id: ID!
+  uuid: String!
+  name: String!
+  description: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+}
+
+input NewStage {
+  name: String!
+  description: String!
+}
 
 
 
 type Resident {
   id: ID!
+  uuid: String
   name: String!
   description: String!
-  purchaseOrderId: String!
+  purchaseOrder: String!
   emailAddress: String!
   client: String!
   cloudProvider: String!
   residentCid: String!
-  rootCid: String!
+  cloudEstate: String!
+  cloudEstateCid: String!
   class: String!
   stage: String!
   createdAt: String!
@@ -122,34 +172,13 @@ type Resident {
 input NewResident {
   name: String!
   description: String!
-  purchaseOrderId: String!
+  purchaseOrder: String!
   emailAddress: String!
-  clientName: String!
-  cloudProviderName: String!
-  className: String!
-  stageName: String!
+  cloudEstate: String
+  client: String!
+  class: String!
+  stage: String!
 }
-
-
-type Class {
-  id: ID!
-  name: String!
-  description: String!
-
-}
-
-type Stage {
-  id: ID!
-  name: String!
-  description: String!
-}
-
-type Client {
-  id: ID!
-  name: String!
-  fullName: String!
-}
-
 
 type Query {
   
@@ -170,17 +199,42 @@ type Query {
 
   cloudEstatePolicys: [CloudEstatePolicy!]! 
 
+  clients: [Client!]! 
+  clientByName(name: String!): Client
+  clientByUUID(uuid: String!): Client
+
+  classes: [Class!]! 
+  classByName(name: String!): Class
+  classByUUID(uuid: String!): Class
+
+  stages: [Stage!]! 
+  stageByName(name: String!): Stage
+  stageByUUID(uuid: String!): Stage
+
+
   residents: [Resident!]!
+  residentByName(name: String!): Resident
+  residentByUUID(uuid: String!): Resident
+
 }
 
 type Mutation {
   createFederal(input: NewFederal!): Federal!
+
   createCloudProvider(input: NewCloudProvider!): CloudProvider!
+
   createCloudEstate(input: NewCloudEstate!): CloudEstate!
+
   createCloudEstatePolicyWithCid(input: NewCloudEstatePolicyWithCid!): CloudEstatePolicy!
+
   createCloudEstatePolicyWithJson(input: NewCloudEstatePolicyWithJson!): CloudEstatePolicy!
 
+  createClient(input: NewClient!): Client
+
+  createClass(input: NewClass!): Class
+
+  createStage(input: NewStage!): Stage
+
   createResident(input: NewResident!): Resident!
-  
 
 }

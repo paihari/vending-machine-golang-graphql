@@ -4,14 +4,24 @@ package model
 
 type Class struct {
 	ID          string `json:"id"`
+	UUID        string `json:"uuid"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	CreatedAt   string `json:"createdAt"`
+	CreatedBy   string `json:"createdBy"`
+	UpdatedAt   string `json:"updatedAt"`
+	UpdatedBy   string `json:"updatedBy"`
 }
 
 type Client struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	FullName string `json:"fullName"`
+	ID        string `json:"id"`
+	UUID      string `json:"uuid"`
+	Name      string `json:"name"`
+	FullName  string `json:"fullName"`
+	CreatedAt string `json:"createdAt"`
+	CreatedBy string `json:"createdBy"`
+	UpdatedAt string `json:"updatedAt"`
+	UpdatedBy string `json:"updatedBy"`
 }
 
 type CloudEstate struct {
@@ -66,6 +76,16 @@ type Federal struct {
 	UpdatedBy string `json:"updatedBy"`
 }
 
+type NewClass struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type NewClient struct {
+	Name     string `json:"name"`
+	FullName string `json:"fullName"`
+}
+
 type NewCloudEstate struct {
 	Name                string `json:"name"`
 	Description         string `json:"description"`
@@ -102,36 +122,48 @@ type NewFederal struct {
 }
 
 type NewResident struct {
-	Name              string `json:"name"`
-	Description       string `json:"description"`
-	PurchaseOrderID   string `json:"purchaseOrderId"`
-	EmailAddress      string `json:"emailAddress"`
-	ClientName        string `json:"clientName"`
-	CloudProviderName string `json:"cloudProviderName"`
-	ClassName         string `json:"className"`
-	StageName         string `json:"stageName"`
+	Name          string  `json:"name"`
+	Description   string  `json:"description"`
+	PurchaseOrder string  `json:"purchaseOrder"`
+	EmailAddress  string  `json:"emailAddress"`
+	CloudEstate   *string `json:"cloudEstate"`
+	Client        string  `json:"client"`
+	Class         string  `json:"class"`
+	Stage         string  `json:"stage"`
+}
+
+type NewStage struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 type Resident struct {
-	ID              string `json:"id"`
-	Name            string `json:"name"`
-	Description     string `json:"description"`
-	PurchaseOrderID string `json:"purchaseOrderId"`
-	EmailAddress    string `json:"emailAddress"`
-	Client          string `json:"client"`
-	CloudProvider   string `json:"cloudProvider"`
-	ResidentCid     string `json:"residentCid"`
-	RootCid         string `json:"rootCid"`
-	Class           string `json:"class"`
-	Stage           string `json:"stage"`
-	CreatedAt       string `json:"createdAt"`
-	CreatedBy       string `json:"createdBy"`
-	UpdatedAt       string `json:"updatedAt"`
-	UpdatedBy       string `json:"updatedBy"`
+	ID             string  `json:"id"`
+	UUID           *string `json:"uuid"`
+	Name           string  `json:"name"`
+	Description    string  `json:"description"`
+	PurchaseOrder  string  `json:"purchaseOrder"`
+	EmailAddress   string  `json:"emailAddress"`
+	Client         string  `json:"client"`
+	CloudProvider  string  `json:"cloudProvider"`
+	ResidentCid    string  `json:"residentCid"`
+	CloudEstate    string  `json:"cloudEstate"`
+	CloudEstateCid string  `json:"cloudEstateCid"`
+	Class          string  `json:"class"`
+	Stage          string  `json:"stage"`
+	CreatedAt      string  `json:"createdAt"`
+	CreatedBy      string  `json:"createdBy"`
+	UpdatedAt      string  `json:"updatedAt"`
+	UpdatedBy      string  `json:"updatedBy"`
 }
 
 type Stage struct {
 	ID          string `json:"id"`
+	UUID        string `json:"uuid"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	CreatedAt   string `json:"createdAt"`
+	CreatedBy   string `json:"createdBy"`
+	UpdatedAt   string `json:"updatedAt"`
+	UpdatedBy   string `json:"updatedBy"`
 }

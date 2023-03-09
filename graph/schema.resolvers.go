@@ -7,12 +7,13 @@ package graph
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
 	pg "github.com/go-pg/pg/v10"
+	"github.com/paihari/vending-machine-golang-graphql/awscompose"
 	"github.com/paihari/vending-machine-golang-graphql/base"
 	"github.com/paihari/vending-machine-golang-graphql/graph/model"
-	
 )
 
 // CreateFederal is the resolver for the createFederal field.
@@ -93,7 +94,6 @@ func (r *mutationResolver) CreateCloudEstate(ctx context.Context, input model.Ne
 
 // CreateCloudEstatePolicyWithCid is the resolver for the createCloudEstatePolicyWithCid field.
 func (r *mutationResolver) CreateCloudEstatePolicyWithCid(ctx context.Context, input model.NewCloudEstatePolicyWithCid) (*model.CloudEstatePolicy, error) {
-	
 	db := base.GetDb()
 	defer db.Close()
 
@@ -141,48 +141,102 @@ func (r *mutationResolver) CreateCloudEstatePolicyWithJSON(ctx context.Context, 
 	return &cloudEstatePolicy, nil
 }
 
+// CreateClient is the resolver for the createClient field.
+func (r *mutationResolver) CreateClient(ctx context.Context, input model.NewClient) (*model.Client, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	client := model.Client{
+		Name:     input.Name,
+		FullName: input.FullName,
+	}
+
+	_, error := db.Model(&client).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Client : %v", error)
+	}
+	return &client, nil
+}
+
+// CreateClass is the resolver for the createClass field.
+func (r *mutationResolver) CreateClass(ctx context.Context, input model.NewClass) (*model.Class, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	class := model.Class{
+		Name:        input.Name,
+		Description: input.Description,
+	}
+
+	_, error := db.Model(&class).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Class : %v", error)
+	}
+
+	return &class, nil
+}
+
+// CreateStage is the resolver for the createStage field.
+func (r *mutationResolver) CreateStage(ctx context.Context, input model.NewStage) (*model.Stage, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	stage := model.Stage{
+		Name:        input.Name,
+		Description: input.Description,
+	}
+
+	_, error := db.Model(&stage).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new Stage : %v", error)
+	}
+
+	return &stage, nil
+}
+
 // CreateResident is the resolver for the createResident field.
 func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error) {
 	db := base.GetDb()
 	defer db.Close()
 
-	//stage := base.GetStageByName(input.StageName, db)
-	var stage model.Stage
-	db.Model(&stage).Where("name = ?", input.StageName).Select()
+	cloudEstate := base.GetCloudEstateByName(*input.CloudEstate, db)
+	cloudProvider := base.GetCloudProviderByName(cloudEstate.CloudProvider, db)
+	client := base.GetClientByName(input.Client, db)
 
-	client := base.GetClientByName(input.ClientName, db)
+	stage := base.GetStageByName(input.Stage, db)
 
-	cloudProvider := base.GetCloudProviderByName(input.CloudProviderName, db)
-
-	//class := base.GetClassByName(input.ClassName, db)
-	var class model.Class
-	db.Model(&class).Where("name = ?", input.ClassName).Select()
+	class := base.GetClassByName(input.Class, db)
 
 	var createdBy, updatedBy string
 	createdBy = "VEND"
 	updatedBy = "VEND"
 
-	// residentCid, err := awscompose.CreateResidentAccount(input.Name, input.EmailAddress)
-	// if err != nil {
-	// 	log.Fatalf("Unable to retrieve labels: %v", err)
-	// 	return nil, err
-	// }
+	residentCid, err := awscompose.CreateResidentAccount(input.Name, input.EmailAddress)
+	if err != nil {
 
-	residentCid := "SOME CID"
+		log.Fatalf("Unable to Create Resident/account %v", err)
+		return nil, err
+	}
+
+	//residentCid := "SOME CID"
 
 	resident := model.Resident{
-		Name:            input.Name,
-		Description:     input.Description,
-		PurchaseOrderID: input.PurchaseOrderID,
-		EmailAddress:    input.EmailAddress,
-		Client:          client.Name,
-		CloudProvider:   cloudProvider.Name,
-		ResidentCid:     residentCid,
-		//RootCid:         cloudProvider.RootCid,
-		Class:     class.Name,
-		Stage:     stage.Name,
-		CreatedBy: createdBy,
-		UpdatedBy: updatedBy,
+		Name:           input.Name,
+		Description:    input.Description,
+		PurchaseOrder:  input.PurchaseOrder,
+		EmailAddress:   input.EmailAddress,
+		Client:         client.Name,
+		CloudProvider:  cloudProvider.Name,
+		ResidentCid:    residentCid,
+		CloudEstate:    cloudEstate.Name,
+		CloudEstateCid: cloudEstate.CloudEstateCid,
+		Class:          class.Name,
+		Stage:          stage.Name,
+		CreatedBy:      createdBy,
+		UpdatedBy:      updatedBy,
 	}
 
 	_, error := db.Model(&resident).Insert()
@@ -219,17 +273,16 @@ func (r *queryResolver) Federals(ctx context.Context) ([]*model.Federal, error) 
 func (r *queryResolver) FederalByUUID(ctx context.Context, uuid string) (*model.Federal, error) {
 	db := base.GetDb()
 	defer db.Close()
-	
+
 	federal := base.GetFederalByUUID(uuid, db)
 	return &federal, nil
-
 }
 
 // FederalByName is the resolver for the federalByName field.
 func (r *queryResolver) FederalByName(ctx context.Context, name string) (*model.Federal, error) {
 	db := base.GetDb()
 	defer db.Close()
-	
+
 	federal := base.GetFederalByName(name, db)
 	return &federal, nil
 }
@@ -257,10 +310,9 @@ func (r *queryResolver) CloudProviders(ctx context.Context) ([]*model.CloudProvi
 
 // CloudProviderByUUID is the resolver for the cloudProviderByUUID field.
 func (r *queryResolver) CloudProviderByUUID(ctx context.Context, uuid string) (*model.CloudProvider, error) {
-	
 	db := base.GetDb()
 	defer db.Close()
-	
+
 	cloudProvider := base.GetCloudProviderByName(uuid, db)
 	return &cloudProvider, nil
 }
@@ -269,10 +321,9 @@ func (r *queryResolver) CloudProviderByUUID(ctx context.Context, uuid string) (*
 func (r *queryResolver) CloudProviderByName(ctx context.Context, name string) (*model.CloudProvider, error) {
 	db := base.GetDb()
 	defer db.Close()
-	
+
 	cloudProvider := base.GetCloudProviderByName(name, db)
 	return &cloudProvider, nil
-
 }
 
 // CloudEstates is the resolver for the cloudEstates field.
@@ -300,18 +351,16 @@ func (r *queryResolver) CloudEstates(ctx context.Context) ([]*model.CloudEstate,
 func (r *queryResolver) CloudEstateByUUID(ctx context.Context, uuid string) (*model.CloudEstate, error) {
 	db := base.GetDb()
 	defer db.Close()
-	
+
 	cloudEstate := base.GetCloudEstateByUUID(uuid, db)
 	return &cloudEstate, nil
 }
-
-
 
 // CloudEstateByName is the resolver for the cloudEstateByName field.
 func (r *queryResolver) CloudEstateByName(ctx context.Context, name string) (*model.CloudEstate, error) {
 	db := base.GetDb()
 	defer db.Close()
-	
+
 	cloudEstate := base.GetCloudEstateByName(name, db)
 	return &cloudEstate, nil
 }
@@ -334,7 +383,124 @@ func (r *queryResolver) CloudEstatePolicys(ctx context.Context) ([]*model.CloudE
 		return nil, error
 	}
 
-	return nil, nil
+	return cloudEstatePolicys, nil
+}
+
+// Clients is the resolver for the clients field.
+func (r *queryResolver) Clients(ctx context.Context) ([]*model.Client, error) {
+	var clients []*model.Client
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&clients).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return clients, nil
+}
+
+// ClientByName is the resolver for the clientByName field.
+func (r *queryResolver) ClientByName(ctx context.Context, name string) (*model.Client, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	client := base.GetClientByName(name, db)
+	return &client, nil
+}
+
+// ClientByUUID is the resolver for the clientByUUID field.
+func (r *queryResolver) ClientByUUID(ctx context.Context, uuid string) (*model.Client, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	client := base.GetClientByUUID(uuid, db)
+	return &client, nil
+}
+
+// Classes is the resolver for the classes field.
+func (r *queryResolver) Classes(ctx context.Context) ([]*model.Class, error) {
+	var classes []*model.Class
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&classes).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return classes, nil
+}
+
+// ClassByName is the resolver for the classByName field.
+func (r *queryResolver) ClassByName(ctx context.Context, name string) (*model.Class, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	class := base.GetClassByName(name, db)
+	return &class, nil
+}
+
+// ClassByUUID is the resolver for the classByUUID field.
+func (r *queryResolver) ClassByUUID(ctx context.Context, uuid string) (*model.Class, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	class := base.GetClassByUUID(uuid, db)
+	return &class, nil
+}
+
+// Stages is the resolver for the stages field.
+func (r *queryResolver) Stages(ctx context.Context) ([]*model.Stage, error) {
+	var stages []*model.Stage
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&stages).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return stages, nil
+}
+
+// StageByName is the resolver for the stageByName field.
+func (r *queryResolver) StageByName(ctx context.Context, name string) (*model.Stage, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	stage := base.GetStageByName(name, db)
+	return &stage, nil
+}
+
+// StageByUUID is the resolver for the stageByUUID field.
+func (r *queryResolver) StageByUUID(ctx context.Context, uuid string) (*model.Stage, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	stage := base.GetStageByUUID(uuid, db)
+	return &stage, nil
 }
 
 // Residents is the resolver for the residents field.
@@ -356,6 +522,16 @@ func (r *queryResolver) Residents(ctx context.Context) ([]*model.Resident, error
 	}
 
 	return residents, nil
+}
+
+// ResidentByName is the resolver for the residentByName field.
+func (r *queryResolver) ResidentByName(ctx context.Context, name string) (*model.Resident, error) {
+	panic(fmt.Errorf("not implemented: ResidentByName - residentByName"))
+}
+
+// ResidentByUUID is the resolver for the residentByUUID field.
+func (r *queryResolver) ResidentByUUID(ctx context.Context, uuid string) (*model.Resident, error) {
+	panic(fmt.Errorf("not implemented: ResidentByUUID - residentByUUID"))
 }
 
 // Mutation returns MutationResolver implementation.

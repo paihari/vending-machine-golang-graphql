@@ -45,15 +45,25 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Class struct {
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
 		Description func(childComplexity int) int
 		ID          func(childComplexity int) int
 		Name        func(childComplexity int) int
+		UUID        func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 
 	Client struct {
-		FullName func(childComplexity int) int
-		ID       func(childComplexity int) int
-		Name     func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		CreatedBy func(childComplexity int) int
+		FullName  func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		UUID      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UpdatedBy func(childComplexity int) int
 	}
 
 	CloudEstate struct {
@@ -109,15 +119,24 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		CreateClass                     func(childComplexity int, input model.NewClass) int
+		CreateClient                    func(childComplexity int, input model.NewClient) int
 		CreateCloudEstate               func(childComplexity int, input model.NewCloudEstate) int
 		CreateCloudEstatePolicyWithCid  func(childComplexity int, input model.NewCloudEstatePolicyWithCid) int
 		CreateCloudEstatePolicyWithJSON func(childComplexity int, input model.NewCloudEstatePolicyWithJSON) int
 		CreateCloudProvider             func(childComplexity int, input model.NewCloudProvider) int
 		CreateFederal                   func(childComplexity int, input model.NewFederal) int
 		CreateResident                  func(childComplexity int, input model.NewResident) int
+		CreateStage                     func(childComplexity int, input model.NewStage) int
 	}
 
 	Query struct {
+		ClassByName         func(childComplexity int, name string) int
+		ClassByUUID         func(childComplexity int, uuid string) int
+		Classes             func(childComplexity int) int
+		ClientByName        func(childComplexity int, name string) int
+		ClientByUUID        func(childComplexity int, uuid string) int
+		Clients             func(childComplexity int) int
 		CloudEstateByName   func(childComplexity int, name string) int
 		CloudEstateByUUID   func(childComplexity int, uuid string) int
 		CloudEstatePolicys  func(childComplexity int) int
@@ -128,31 +147,43 @@ type ComplexityRoot struct {
 		FederalByName       func(childComplexity int, name string) int
 		FederalByUUID       func(childComplexity int, uuid string) int
 		Federals            func(childComplexity int) int
+		ResidentByName      func(childComplexity int, name string) int
+		ResidentByUUID      func(childComplexity int, uuid string) int
 		Residents           func(childComplexity int) int
+		StageByName         func(childComplexity int, name string) int
+		StageByUUID         func(childComplexity int, uuid string) int
+		Stages              func(childComplexity int) int
 	}
 
 	Resident struct {
-		Class           func(childComplexity int) int
-		Client          func(childComplexity int) int
-		CloudProvider   func(childComplexity int) int
-		CreatedAt       func(childComplexity int) int
-		CreatedBy       func(childComplexity int) int
-		Description     func(childComplexity int) int
-		EmailAddress    func(childComplexity int) int
-		ID              func(childComplexity int) int
-		Name            func(childComplexity int) int
-		PurchaseOrderID func(childComplexity int) int
-		ResidentCid     func(childComplexity int) int
-		RootCid         func(childComplexity int) int
-		Stage           func(childComplexity int) int
-		UpdatedAt       func(childComplexity int) int
-		UpdatedBy       func(childComplexity int) int
+		Class          func(childComplexity int) int
+		Client         func(childComplexity int) int
+		CloudEstate    func(childComplexity int) int
+		CloudEstateCid func(childComplexity int) int
+		CloudProvider  func(childComplexity int) int
+		CreatedAt      func(childComplexity int) int
+		CreatedBy      func(childComplexity int) int
+		Description    func(childComplexity int) int
+		EmailAddress   func(childComplexity int) int
+		ID             func(childComplexity int) int
+		Name           func(childComplexity int) int
+		PurchaseOrder  func(childComplexity int) int
+		ResidentCid    func(childComplexity int) int
+		Stage          func(childComplexity int) int
+		UUID           func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
+		UpdatedBy      func(childComplexity int) int
 	}
 
 	Stage struct {
+		CreatedAt   func(childComplexity int) int
+		CreatedBy   func(childComplexity int) int
 		Description func(childComplexity int) int
 		ID          func(childComplexity int) int
 		Name        func(childComplexity int) int
+		UUID        func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UpdatedBy   func(childComplexity int) int
 	}
 }
 
@@ -162,6 +193,9 @@ type MutationResolver interface {
 	CreateCloudEstate(ctx context.Context, input model.NewCloudEstate) (*model.CloudEstate, error)
 	CreateCloudEstatePolicyWithCid(ctx context.Context, input model.NewCloudEstatePolicyWithCid) (*model.CloudEstatePolicy, error)
 	CreateCloudEstatePolicyWithJSON(ctx context.Context, input model.NewCloudEstatePolicyWithJSON) (*model.CloudEstatePolicy, error)
+	CreateClient(ctx context.Context, input model.NewClient) (*model.Client, error)
+	CreateClass(ctx context.Context, input model.NewClass) (*model.Class, error)
+	CreateStage(ctx context.Context, input model.NewStage) (*model.Stage, error)
 	CreateResident(ctx context.Context, input model.NewResident) (*model.Resident, error)
 }
 type QueryResolver interface {
@@ -175,7 +209,18 @@ type QueryResolver interface {
 	CloudEstateByUUID(ctx context.Context, uuid string) (*model.CloudEstate, error)
 	CloudEstateByName(ctx context.Context, name string) (*model.CloudEstate, error)
 	CloudEstatePolicys(ctx context.Context) ([]*model.CloudEstatePolicy, error)
+	Clients(ctx context.Context) ([]*model.Client, error)
+	ClientByName(ctx context.Context, name string) (*model.Client, error)
+	ClientByUUID(ctx context.Context, uuid string) (*model.Client, error)
+	Classes(ctx context.Context) ([]*model.Class, error)
+	ClassByName(ctx context.Context, name string) (*model.Class, error)
+	ClassByUUID(ctx context.Context, uuid string) (*model.Class, error)
+	Stages(ctx context.Context) ([]*model.Stage, error)
+	StageByName(ctx context.Context, name string) (*model.Stage, error)
+	StageByUUID(ctx context.Context, uuid string) (*model.Stage, error)
 	Residents(ctx context.Context) ([]*model.Resident, error)
+	ResidentByName(ctx context.Context, name string) (*model.Resident, error)
+	ResidentByUUID(ctx context.Context, uuid string) (*model.Resident, error)
 }
 
 type executableSchema struct {
@@ -192,6 +237,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Class.createdAt":
+		if e.complexity.Class.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Class.CreatedAt(childComplexity), true
+
+	case "Class.createdBy":
+		if e.complexity.Class.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Class.CreatedBy(childComplexity), true
 
 	case "Class.description":
 		if e.complexity.Class.Description == nil {
@@ -214,6 +273,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Class.Name(childComplexity), true
 
+	case "Class.uuid":
+		if e.complexity.Class.UUID == nil {
+			break
+		}
+
+		return e.complexity.Class.UUID(childComplexity), true
+
+	case "Class.updatedAt":
+		if e.complexity.Class.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Class.UpdatedAt(childComplexity), true
+
+	case "Class.updatedBy":
+		if e.complexity.Class.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Class.UpdatedBy(childComplexity), true
+
+	case "Client.createdAt":
+		if e.complexity.Client.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Client.CreatedAt(childComplexity), true
+
+	case "Client.createdBy":
+		if e.complexity.Client.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Client.CreatedBy(childComplexity), true
+
 	case "Client.fullName":
 		if e.complexity.Client.FullName == nil {
 			break
@@ -234,6 +328,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Client.Name(childComplexity), true
+
+	case "Client.uuid":
+		if e.complexity.Client.UUID == nil {
+			break
+		}
+
+		return e.complexity.Client.UUID(childComplexity), true
+
+	case "Client.updatedAt":
+		if e.complexity.Client.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Client.UpdatedAt(childComplexity), true
+
+	case "Client.updatedBy":
+		if e.complexity.Client.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Client.UpdatedBy(childComplexity), true
 
 	case "CloudEstate.cloudEstateCid":
 		if e.complexity.CloudEstate.CloudEstateCid == nil {
@@ -515,6 +630,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Federal.UpdatedBy(childComplexity), true
 
+	case "Mutation.createClass":
+		if e.complexity.Mutation.CreateClass == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createClass_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateClass(childComplexity, args["input"].(model.NewClass)), true
+
+	case "Mutation.createClient":
+		if e.complexity.Mutation.CreateClient == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createClient_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateClient(childComplexity, args["input"].(model.NewClient)), true
+
 	case "Mutation.createCloudEstate":
 		if e.complexity.Mutation.CreateCloudEstate == nil {
 			break
@@ -586,6 +725,80 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateResident(childComplexity, args["input"].(model.NewResident)), true
+
+	case "Mutation.createStage":
+		if e.complexity.Mutation.CreateStage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createStage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateStage(childComplexity, args["input"].(model.NewStage)), true
+
+	case "Query.classByName":
+		if e.complexity.Query.ClassByName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_classByName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ClassByName(childComplexity, args["name"].(string)), true
+
+	case "Query.classByUUID":
+		if e.complexity.Query.ClassByUUID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_classByUUID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ClassByUUID(childComplexity, args["uuid"].(string)), true
+
+	case "Query.classes":
+		if e.complexity.Query.Classes == nil {
+			break
+		}
+
+		return e.complexity.Query.Classes(childComplexity), true
+
+	case "Query.clientByName":
+		if e.complexity.Query.ClientByName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_clientByName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ClientByName(childComplexity, args["name"].(string)), true
+
+	case "Query.clientByUUID":
+		if e.complexity.Query.ClientByUUID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_clientByUUID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ClientByUUID(childComplexity, args["uuid"].(string)), true
+
+	case "Query.clients":
+		if e.complexity.Query.Clients == nil {
+			break
+		}
+
+		return e.complexity.Query.Clients(childComplexity), true
 
 	case "Query.cloudEstateByName":
 		if e.complexity.Query.CloudEstateByName == nil {
@@ -687,12 +900,67 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Federals(childComplexity), true
 
+	case "Query.residentByName":
+		if e.complexity.Query.ResidentByName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_residentByName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ResidentByName(childComplexity, args["name"].(string)), true
+
+	case "Query.residentByUUID":
+		if e.complexity.Query.ResidentByUUID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_residentByUUID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ResidentByUUID(childComplexity, args["uuid"].(string)), true
+
 	case "Query.residents":
 		if e.complexity.Query.Residents == nil {
 			break
 		}
 
 		return e.complexity.Query.Residents(childComplexity), true
+
+	case "Query.stageByName":
+		if e.complexity.Query.StageByName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_stageByName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.StageByName(childComplexity, args["name"].(string)), true
+
+	case "Query.stageByUUID":
+		if e.complexity.Query.StageByUUID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_stageByUUID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.StageByUUID(childComplexity, args["uuid"].(string)), true
+
+	case "Query.stages":
+		if e.complexity.Query.Stages == nil {
+			break
+		}
+
+		return e.complexity.Query.Stages(childComplexity), true
 
 	case "Resident.class":
 		if e.complexity.Resident.Class == nil {
@@ -707,6 +975,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Resident.Client(childComplexity), true
+
+	case "Resident.cloudEstate":
+		if e.complexity.Resident.CloudEstate == nil {
+			break
+		}
+
+		return e.complexity.Resident.CloudEstate(childComplexity), true
+
+	case "Resident.cloudEstateCid":
+		if e.complexity.Resident.CloudEstateCid == nil {
+			break
+		}
+
+		return e.complexity.Resident.CloudEstateCid(childComplexity), true
 
 	case "Resident.cloudProvider":
 		if e.complexity.Resident.CloudProvider == nil {
@@ -757,12 +1039,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Resident.Name(childComplexity), true
 
-	case "Resident.purchaseOrderId":
-		if e.complexity.Resident.PurchaseOrderID == nil {
+	case "Resident.purchaseOrder":
+		if e.complexity.Resident.PurchaseOrder == nil {
 			break
 		}
 
-		return e.complexity.Resident.PurchaseOrderID(childComplexity), true
+		return e.complexity.Resident.PurchaseOrder(childComplexity), true
 
 	case "Resident.residentCid":
 		if e.complexity.Resident.ResidentCid == nil {
@@ -771,19 +1053,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Resident.ResidentCid(childComplexity), true
 
-	case "Resident.rootCid":
-		if e.complexity.Resident.RootCid == nil {
-			break
-		}
-
-		return e.complexity.Resident.RootCid(childComplexity), true
-
 	case "Resident.stage":
 		if e.complexity.Resident.Stage == nil {
 			break
 		}
 
 		return e.complexity.Resident.Stage(childComplexity), true
+
+	case "Resident.uuid":
+		if e.complexity.Resident.UUID == nil {
+			break
+		}
+
+		return e.complexity.Resident.UUID(childComplexity), true
 
 	case "Resident.updatedAt":
 		if e.complexity.Resident.UpdatedAt == nil {
@@ -798,6 +1080,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Resident.UpdatedBy(childComplexity), true
+
+	case "Stage.createdAt":
+		if e.complexity.Stage.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Stage.CreatedAt(childComplexity), true
+
+	case "Stage.createdBy":
+		if e.complexity.Stage.CreatedBy == nil {
+			break
+		}
+
+		return e.complexity.Stage.CreatedBy(childComplexity), true
 
 	case "Stage.description":
 		if e.complexity.Stage.Description == nil {
@@ -820,6 +1116,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Stage.Name(childComplexity), true
 
+	case "Stage.uuid":
+		if e.complexity.Stage.UUID == nil {
+			break
+		}
+
+		return e.complexity.Stage.UUID(childComplexity), true
+
+	case "Stage.updatedAt":
+		if e.complexity.Stage.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Stage.UpdatedAt(childComplexity), true
+
+	case "Stage.updatedBy":
+		if e.complexity.Stage.UpdatedBy == nil {
+			break
+		}
+
+		return e.complexity.Stage.UpdatedBy(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -828,12 +1145,15 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputNewClass,
+		ec.unmarshalInputNewClient,
 		ec.unmarshalInputNewCloudEstate,
 		ec.unmarshalInputNewCloudEstatePolicyWithCid,
 		ec.unmarshalInputNewCloudEstatePolicyWithJson,
 		ec.unmarshalInputNewCloudProvider,
 		ec.unmarshalInputNewFederal,
 		ec.unmarshalInputNewResident,
+		ec.unmarshalInputNewStage,
 	)
 	first := true
 
@@ -912,6 +1232,36 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createClass_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewClass
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewClass2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewClass(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createClient_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewClient
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewClient2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewClient(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createCloudEstatePolicyWithCid_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1003,6 +1353,21 @@ func (ec *executionContext) field_Mutation_createResident_args(ctx context.Conte
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createStage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewStage
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewStage2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewStage(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1015,6 +1380,66 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_classByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_classByUUID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["uuid"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uuid"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uuid"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_clientByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_clientByUUID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["uuid"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uuid"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uuid"] = arg0
 	return args, nil
 }
 
@@ -1094,6 +1519,66 @@ func (ec *executionContext) field_Query_federalByName_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Query_federalByUUID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["uuid"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uuid"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uuid"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_residentByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_residentByUUID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["uuid"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uuid"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uuid"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_stageByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_stageByUUID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1190,6 +1675,50 @@ func (ec *executionContext) fieldContext_Class_id(ctx context.Context, field gra
 	return fc, nil
 }
 
+func (ec *executionContext) _Class_uuid(ctx context.Context, field graphql.CollectedField, obj *model.Class) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Class_uuid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Class_uuid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Class",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Class_name(ctx context.Context, field graphql.CollectedField, obj *model.Class) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Class_name(ctx, field)
 	if err != nil {
@@ -1278,6 +1807,182 @@ func (ec *executionContext) fieldContext_Class_description(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Class_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Class) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Class_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Class_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Class",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Class_createdBy(ctx context.Context, field graphql.CollectedField, obj *model.Class) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Class_createdBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Class_createdBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Class",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Class_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Class) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Class_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Class_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Class",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Class_updatedBy(ctx context.Context, field graphql.CollectedField, obj *model.Class) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Class_updatedBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Class_updatedBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Class",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Client_id(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Client_id(ctx, field)
 	if err != nil {
@@ -1317,6 +2022,50 @@ func (ec *executionContext) fieldContext_Client_id(ctx context.Context, field gr
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Client_uuid(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Client_uuid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Client_uuid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Client",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -1398,6 +2147,182 @@ func (ec *executionContext) _Client_fullName(ctx context.Context, field graphql.
 }
 
 func (ec *executionContext) fieldContext_Client_fullName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Client",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Client_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Client_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Client_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Client",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Client_createdBy(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Client_createdBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Client_createdBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Client",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Client_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Client_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Client_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Client",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Client_updatedBy(ctx context.Context, field graphql.CollectedField, obj *model.Client) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Client_updatedBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Client_updatedBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Client",
 		Field:      field,
@@ -3554,6 +4479,213 @@ func (ec *executionContext) fieldContext_Mutation_createCloudEstatePolicyWithJso
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createClient(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createClient(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateClient(rctx, fc.Args["input"].(model.NewClient))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Client)
+	fc.Result = res
+	return ec.marshalOClient2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createClient(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Client_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Client_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Client_name(ctx, field)
+			case "fullName":
+				return ec.fieldContext_Client_fullName(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Client_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Client_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Client_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Client_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Client", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createClient_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createClass(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createClass(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateClass(rctx, fc.Args["input"].(model.NewClass))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Class)
+	fc.Result = res
+	return ec.marshalOClass2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClass(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createClass(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Class_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Class_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Class_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Class_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Class_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Class_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Class_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Class_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Class", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createClass_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createStage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createStage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateStage(rctx, fc.Args["input"].(model.NewStage))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Stage)
+	fc.Result = res
+	return ec.marshalOStage2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createStage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Stage_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Stage_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Stage_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Stage_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Stage_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Stage_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Stage_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Stage_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Stage", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createStage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createResident(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createResident(ctx, field)
 	if err != nil {
@@ -3594,12 +4726,14 @@ func (ec *executionContext) fieldContext_Mutation_createResident(ctx context.Con
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Resident_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Resident_uuid(ctx, field)
 			case "name":
 				return ec.fieldContext_Resident_name(ctx, field)
 			case "description":
 				return ec.fieldContext_Resident_description(ctx, field)
-			case "purchaseOrderId":
-				return ec.fieldContext_Resident_purchaseOrderId(ctx, field)
+			case "purchaseOrder":
+				return ec.fieldContext_Resident_purchaseOrder(ctx, field)
 			case "emailAddress":
 				return ec.fieldContext_Resident_emailAddress(ctx, field)
 			case "client":
@@ -3608,8 +4742,10 @@ func (ec *executionContext) fieldContext_Mutation_createResident(ctx context.Con
 				return ec.fieldContext_Resident_cloudProvider(ctx, field)
 			case "residentCid":
 				return ec.fieldContext_Resident_residentCid(ctx, field)
-			case "rootCid":
-				return ec.fieldContext_Resident_rootCid(ctx, field)
+			case "cloudEstate":
+				return ec.fieldContext_Resident_cloudEstate(ctx, field)
+			case "cloudEstateCid":
+				return ec.fieldContext_Resident_cloudEstateCid(ctx, field)
 			case "class":
 				return ec.fieldContext_Resident_class(ctx, field)
 			case "stage":
@@ -4330,6 +5466,603 @@ func (ec *executionContext) fieldContext_Query_cloudEstatePolicys(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_clients(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_clients(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Clients(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Client)
+	fc.Result = res
+	return ec.marshalNClient2ᚕᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClientᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_clients(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Client_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Client_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Client_name(ctx, field)
+			case "fullName":
+				return ec.fieldContext_Client_fullName(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Client_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Client_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Client_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Client_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Client", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_clientByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_clientByName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ClientByName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Client)
+	fc.Result = res
+	return ec.marshalOClient2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_clientByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Client_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Client_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Client_name(ctx, field)
+			case "fullName":
+				return ec.fieldContext_Client_fullName(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Client_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Client_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Client_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Client_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Client", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_clientByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_clientByUUID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_clientByUUID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ClientByUUID(rctx, fc.Args["uuid"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Client)
+	fc.Result = res
+	return ec.marshalOClient2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_clientByUUID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Client_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Client_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Client_name(ctx, field)
+			case "fullName":
+				return ec.fieldContext_Client_fullName(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Client_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Client_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Client_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Client_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Client", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_clientByUUID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_classes(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_classes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Classes(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Class)
+	fc.Result = res
+	return ec.marshalNClass2ᚕᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClassᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_classes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Class_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Class_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Class_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Class_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Class_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Class_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Class_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Class_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Class", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_classByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_classByName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ClassByName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Class)
+	fc.Result = res
+	return ec.marshalOClass2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClass(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_classByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Class_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Class_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Class_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Class_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Class_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Class_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Class_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Class_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Class", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_classByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_classByUUID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_classByUUID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ClassByUUID(rctx, fc.Args["uuid"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Class)
+	fc.Result = res
+	return ec.marshalOClass2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClass(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_classByUUID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Class_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Class_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Class_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Class_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Class_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Class_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Class_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Class_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Class", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_classByUUID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_stages(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_stages(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Stages(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Stage)
+	fc.Result = res
+	return ec.marshalNStage2ᚕᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStageᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_stages(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Stage_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Stage_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Stage_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Stage_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Stage_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Stage_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Stage_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Stage_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Stage", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_stageByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_stageByName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().StageByName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Stage)
+	fc.Result = res
+	return ec.marshalOStage2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_stageByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Stage_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Stage_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Stage_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Stage_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Stage_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Stage_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Stage_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Stage_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Stage", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_stageByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_stageByUUID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_stageByUUID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().StageByUUID(rctx, fc.Args["uuid"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Stage)
+	fc.Result = res
+	return ec.marshalOStage2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_stageByUUID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Stage_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Stage_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Stage_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Stage_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Stage_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Stage_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Stage_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Stage_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Stage", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_stageByUUID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_residents(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_residents(ctx, field)
 	if err != nil {
@@ -4370,12 +6103,14 @@ func (ec *executionContext) fieldContext_Query_residents(ctx context.Context, fi
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Resident_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Resident_uuid(ctx, field)
 			case "name":
 				return ec.fieldContext_Resident_name(ctx, field)
 			case "description":
 				return ec.fieldContext_Resident_description(ctx, field)
-			case "purchaseOrderId":
-				return ec.fieldContext_Resident_purchaseOrderId(ctx, field)
+			case "purchaseOrder":
+				return ec.fieldContext_Resident_purchaseOrder(ctx, field)
 			case "emailAddress":
 				return ec.fieldContext_Resident_emailAddress(ctx, field)
 			case "client":
@@ -4384,8 +6119,10 @@ func (ec *executionContext) fieldContext_Query_residents(ctx context.Context, fi
 				return ec.fieldContext_Resident_cloudProvider(ctx, field)
 			case "residentCid":
 				return ec.fieldContext_Resident_residentCid(ctx, field)
-			case "rootCid":
-				return ec.fieldContext_Resident_rootCid(ctx, field)
+			case "cloudEstate":
+				return ec.fieldContext_Resident_cloudEstate(ctx, field)
+			case "cloudEstateCid":
+				return ec.fieldContext_Resident_cloudEstateCid(ctx, field)
 			case "class":
 				return ec.fieldContext_Resident_class(ctx, field)
 			case "stage":
@@ -4401,6 +6138,180 @@ func (ec *executionContext) fieldContext_Query_residents(ctx context.Context, fi
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Resident", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_residentByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_residentByName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ResidentByName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Resident)
+	fc.Result = res
+	return ec.marshalOResident2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐResident(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_residentByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Resident_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Resident_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Resident_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Resident_description(ctx, field)
+			case "purchaseOrder":
+				return ec.fieldContext_Resident_purchaseOrder(ctx, field)
+			case "emailAddress":
+				return ec.fieldContext_Resident_emailAddress(ctx, field)
+			case "client":
+				return ec.fieldContext_Resident_client(ctx, field)
+			case "cloudProvider":
+				return ec.fieldContext_Resident_cloudProvider(ctx, field)
+			case "residentCid":
+				return ec.fieldContext_Resident_residentCid(ctx, field)
+			case "cloudEstate":
+				return ec.fieldContext_Resident_cloudEstate(ctx, field)
+			case "cloudEstateCid":
+				return ec.fieldContext_Resident_cloudEstateCid(ctx, field)
+			case "class":
+				return ec.fieldContext_Resident_class(ctx, field)
+			case "stage":
+				return ec.fieldContext_Resident_stage(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Resident_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Resident_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Resident_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Resident_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Resident", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_residentByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_residentByUUID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_residentByUUID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ResidentByUUID(rctx, fc.Args["uuid"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Resident)
+	fc.Result = res
+	return ec.marshalOResident2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐResident(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_residentByUUID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Resident_id(ctx, field)
+			case "uuid":
+				return ec.fieldContext_Resident_uuid(ctx, field)
+			case "name":
+				return ec.fieldContext_Resident_name(ctx, field)
+			case "description":
+				return ec.fieldContext_Resident_description(ctx, field)
+			case "purchaseOrder":
+				return ec.fieldContext_Resident_purchaseOrder(ctx, field)
+			case "emailAddress":
+				return ec.fieldContext_Resident_emailAddress(ctx, field)
+			case "client":
+				return ec.fieldContext_Resident_client(ctx, field)
+			case "cloudProvider":
+				return ec.fieldContext_Resident_cloudProvider(ctx, field)
+			case "residentCid":
+				return ec.fieldContext_Resident_residentCid(ctx, field)
+			case "cloudEstate":
+				return ec.fieldContext_Resident_cloudEstate(ctx, field)
+			case "cloudEstateCid":
+				return ec.fieldContext_Resident_cloudEstateCid(ctx, field)
+			case "class":
+				return ec.fieldContext_Resident_class(ctx, field)
+			case "stage":
+				return ec.fieldContext_Resident_stage(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_Resident_createdAt(ctx, field)
+			case "createdBy":
+				return ec.fieldContext_Resident_createdBy(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Resident_updatedAt(ctx, field)
+			case "updatedBy":
+				return ec.fieldContext_Resident_updatedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Resident", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_residentByUUID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
 	}
 	return fc, nil
 }
@@ -4576,6 +6487,47 @@ func (ec *executionContext) fieldContext_Resident_id(ctx context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Resident_uuid(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Resident_uuid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Resident_uuid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Resident",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Resident_name(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Resident_name(ctx, field)
 	if err != nil {
@@ -4664,8 +6616,8 @@ func (ec *executionContext) fieldContext_Resident_description(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Resident_purchaseOrderId(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Resident_purchaseOrderId(ctx, field)
+func (ec *executionContext) _Resident_purchaseOrder(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Resident_purchaseOrder(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4678,7 +6630,7 @@ func (ec *executionContext) _Resident_purchaseOrderId(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PurchaseOrderID, nil
+		return obj.PurchaseOrder, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4695,7 +6647,7 @@ func (ec *executionContext) _Resident_purchaseOrderId(ctx context.Context, field
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Resident_purchaseOrderId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Resident_purchaseOrder(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Resident",
 		Field:      field,
@@ -4884,8 +6836,8 @@ func (ec *executionContext) fieldContext_Resident_residentCid(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Resident_rootCid(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Resident_rootCid(ctx, field)
+func (ec *executionContext) _Resident_cloudEstate(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Resident_cloudEstate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4898,7 +6850,7 @@ func (ec *executionContext) _Resident_rootCid(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.RootCid, nil
+		return obj.CloudEstate, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4915,7 +6867,51 @@ func (ec *executionContext) _Resident_rootCid(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Resident_rootCid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Resident_cloudEstate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Resident",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Resident_cloudEstateCid(ctx context.Context, field graphql.CollectedField, obj *model.Resident) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Resident_cloudEstateCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CloudEstateCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Resident_cloudEstateCid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Resident",
 		Field:      field,
@@ -5236,6 +7232,50 @@ func (ec *executionContext) fieldContext_Stage_id(ctx context.Context, field gra
 	return fc, nil
 }
 
+func (ec *executionContext) _Stage_uuid(ctx context.Context, field graphql.CollectedField, obj *model.Stage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Stage_uuid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Stage_uuid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Stage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Stage_name(ctx context.Context, field graphql.CollectedField, obj *model.Stage) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Stage_name(ctx, field)
 	if err != nil {
@@ -5312,6 +7352,182 @@ func (ec *executionContext) _Stage_description(ctx context.Context, field graphq
 }
 
 func (ec *executionContext) fieldContext_Stage_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Stage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Stage_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Stage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Stage_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Stage_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Stage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Stage_createdBy(ctx context.Context, field graphql.CollectedField, obj *model.Stage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Stage_createdBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Stage_createdBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Stage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Stage_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Stage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Stage_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Stage_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Stage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Stage_updatedBy(ctx context.Context, field graphql.CollectedField, obj *model.Stage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Stage_updatedBy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedBy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Stage_updatedBy(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Stage",
 		Field:      field,
@@ -7097,6 +9313,78 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputNewClass(ctx context.Context, obj interface{}) (model.NewClass, error) {
+	var it model.NewClass
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"name", "description"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputNewClient(ctx context.Context, obj interface{}) (model.NewClient, error) {
+	var it model.NewClient
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"name", "fullName"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "fullName":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("fullName"))
+			it.FullName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewCloudEstate(ctx context.Context, obj interface{}) (model.NewCloudEstate, error) {
 	var it model.NewCloudEstate
 	asMap := map[string]interface{}{}
@@ -7364,7 +9652,7 @@ func (ec *executionContext) unmarshalInputNewResident(ctx context.Context, obj i
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "description", "purchaseOrderId", "emailAddress", "clientName", "cloudProviderName", "className", "stageName"}
+	fieldsInOrder := [...]string{"name", "description", "purchaseOrder", "emailAddress", "cloudEstate", "client", "class", "stage"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7387,11 +9675,11 @@ func (ec *executionContext) unmarshalInputNewResident(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
-		case "purchaseOrderId":
+		case "purchaseOrder":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("purchaseOrderId"))
-			it.PurchaseOrderID, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("purchaseOrder"))
+			it.PurchaseOrder, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7403,35 +9691,71 @@ func (ec *executionContext) unmarshalInputNewResident(ctx context.Context, obj i
 			if err != nil {
 				return it, err
 			}
-		case "clientName":
+		case "cloudEstate":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientName"))
-			it.ClientName, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cloudEstate"))
+			it.CloudEstate, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "cloudProviderName":
+		case "client":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("cloudProviderName"))
-			it.CloudProviderName, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client"))
+			it.Client, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "className":
+		case "class":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("className"))
-			it.ClassName, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("class"))
+			it.Class, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "stageName":
+		case "stage":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stageName"))
-			it.StageName, err = ec.unmarshalNString2string(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stage"))
+			it.Stage, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputNewStage(ctx context.Context, obj interface{}) (model.NewStage, error) {
+	var it model.NewStage
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"name", "description"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -7466,6 +9790,13 @@ func (ec *executionContext) _Class(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "uuid":
+
+			out.Values[i] = ec._Class_uuid(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "name":
 
 			out.Values[i] = ec._Class_name(ctx, field, obj)
@@ -7476,6 +9807,34 @@ func (ec *executionContext) _Class(ctx context.Context, sel ast.SelectionSet, ob
 		case "description":
 
 			out.Values[i] = ec._Class_description(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+
+			out.Values[i] = ec._Class_createdAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdBy":
+
+			out.Values[i] = ec._Class_createdBy(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+
+			out.Values[i] = ec._Class_updatedAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedBy":
+
+			out.Values[i] = ec._Class_updatedBy(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -7508,6 +9867,13 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "uuid":
+
+			out.Values[i] = ec._Client_uuid(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "name":
 
 			out.Values[i] = ec._Client_name(ctx, field, obj)
@@ -7518,6 +9884,34 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 		case "fullName":
 
 			out.Values[i] = ec._Client_fullName(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+
+			out.Values[i] = ec._Client_createdAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdBy":
+
+			out.Values[i] = ec._Client_createdBy(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+
+			out.Values[i] = ec._Client_updatedAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedBy":
+
+			out.Values[i] = ec._Client_updatedBy(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -7945,6 +10339,24 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_createCloudEstatePolicyWithJson(ctx, field)
 			})
 
+		case "createClient":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createClient(ctx, field)
+			})
+
+		case "createClass":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createClass(ctx, field)
+			})
+
+		case "createStage":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createStage(ctx, field)
+			})
+
 		case "createResident":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -8177,6 +10589,186 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
+		case "clients":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_clients(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "clientByName":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_clientByName(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "clientByUUID":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_clientByUUID(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "classes":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_classes(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "classByName":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_classByName(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "classByUUID":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_classByUUID(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "stages":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_stages(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "stageByName":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_stageByName(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "stageByUUID":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_stageByUUID(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
 		case "residents":
 			field := field
 
@@ -8187,6 +10779,46 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_residents(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "residentByName":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_residentByName(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
+
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
+			})
+		case "residentByUUID":
+			field := field
+
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_residentByUUID(ctx, field)
 				return res
 			}
 
@@ -8234,6 +10866,10 @@ func (ec *executionContext) _Resident(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "uuid":
+
+			out.Values[i] = ec._Resident_uuid(ctx, field, obj)
+
 		case "name":
 
 			out.Values[i] = ec._Resident_name(ctx, field, obj)
@@ -8248,9 +10884,9 @@ func (ec *executionContext) _Resident(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "purchaseOrderId":
+		case "purchaseOrder":
 
-			out.Values[i] = ec._Resident_purchaseOrderId(ctx, field, obj)
+			out.Values[i] = ec._Resident_purchaseOrder(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -8283,9 +10919,16 @@ func (ec *executionContext) _Resident(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "rootCid":
+		case "cloudEstate":
 
-			out.Values[i] = ec._Resident_rootCid(ctx, field, obj)
+			out.Values[i] = ec._Resident_cloudEstate(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "cloudEstateCid":
+
+			out.Values[i] = ec._Resident_cloudEstateCid(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -8360,6 +11003,13 @@ func (ec *executionContext) _Stage(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "uuid":
+
+			out.Values[i] = ec._Stage_uuid(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "name":
 
 			out.Values[i] = ec._Stage_name(ctx, field, obj)
@@ -8370,6 +11020,34 @@ func (ec *executionContext) _Stage(ctx context.Context, sel ast.SelectionSet, ob
 		case "description":
 
 			out.Values[i] = ec._Stage_description(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdAt":
+
+			out.Values[i] = ec._Stage_createdAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createdBy":
+
+			out.Values[i] = ec._Stage_createdBy(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedAt":
+
+			out.Values[i] = ec._Stage_updatedAt(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updatedBy":
+
+			out.Values[i] = ec._Stage_updatedBy(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				invalids++
@@ -8718,6 +11396,114 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNClass2ᚕᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClassᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Class) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNClass2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClass(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNClass2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClass(ctx context.Context, sel ast.SelectionSet, v *model.Class) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Class(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNClient2ᚕᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClientᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Client) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNClient2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClient(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNClient2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Client(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNCloudEstate2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐCloudEstate(ctx context.Context, sel ast.SelectionSet, v model.CloudEstate) graphql.Marshaler {
 	return ec._CloudEstate(ctx, sel, &v)
 }
@@ -8980,6 +11766,16 @@ func (ec *executionContext) marshalNJSON2string(ctx context.Context, sel ast.Sel
 	return res
 }
 
+func (ec *executionContext) unmarshalNNewClass2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewClass(ctx context.Context, v interface{}) (model.NewClass, error) {
+	res, err := ec.unmarshalInputNewClass(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNNewClient2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewClient(ctx context.Context, v interface{}) (model.NewClient, error) {
+	res, err := ec.unmarshalInputNewClient(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNNewCloudEstate2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewCloudEstate(ctx context.Context, v interface{}) (model.NewCloudEstate, error) {
 	res, err := ec.unmarshalInputNewCloudEstate(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -9007,6 +11803,11 @@ func (ec *executionContext) unmarshalNNewFederal2githubᚗcomᚋpaihariᚋvendin
 
 func (ec *executionContext) unmarshalNNewResident2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewResident(ctx context.Context, v interface{}) (model.NewResident, error) {
 	res, err := ec.unmarshalInputNewResident(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNNewStage2githubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐNewStage(ctx context.Context, v interface{}) (model.NewStage, error) {
+	res, err := ec.unmarshalInputNewStage(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -9066,6 +11867,60 @@ func (ec *executionContext) marshalNResident2ᚖgithubᚗcomᚋpaihariᚋvending
 		return graphql.Null
 	}
 	return ec._Resident(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNStage2ᚕᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Stage) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNStage2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStage(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNStage2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStage(ctx context.Context, sel ast.SelectionSet, v *model.Stage) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Stage(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -9362,6 +12217,20 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
+func (ec *executionContext) marshalOClass2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClass(ctx context.Context, sel ast.SelectionSet, v *model.Class) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Class(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOClient2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐClient(ctx context.Context, sel ast.SelectionSet, v *model.Client) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Client(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOCloudEstate2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐCloudEstate(ctx context.Context, sel ast.SelectionSet, v *model.CloudEstate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -9381,6 +12250,20 @@ func (ec *executionContext) marshalOFederal2ᚖgithubᚗcomᚋpaihariᚋvending�
 		return graphql.Null
 	}
 	return ec._Federal(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOResident2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐResident(ctx context.Context, sel ast.SelectionSet, v *model.Resident) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Resident(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOStage2ᚖgithubᚗcomᚋpaihariᚋvendingᚑmachineᚑgolangᚑgraphqlᚋgraphᚋmodelᚐStage(ctx context.Context, sel ast.SelectionSet, v *model.Stage) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Stage(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

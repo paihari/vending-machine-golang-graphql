@@ -1,0 +1,10 @@
+version: '3'
+services:
+  vending-machine:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - AWS_ACCESS_KEY_ID=<access_key>
+      - AWS_SECRET_ACCESS_KEY=<secret_key>
+    command: ["./vending-machine-golang-graphql"]
