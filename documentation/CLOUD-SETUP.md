@@ -1,12 +1,20 @@
 # Vending Machine POC
+### Cloud Setup
 
-Simple overview of use/purpose.
+Simple overview of Cloud Setup pre-requisite for Vending Machine
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+Creation of the Management Account with the Cloud Provider is a manual Process.
+The user Sign-up with AWS and OCI 
 
-## Getting Started
+## Starting Position
+Creation of the Management Account with the Cloud Provider is a manual Process.
+The user Sign-up with AWS and OCI with email address and Credit Card Details
+
+* Root Organization and Management Account is created (AWS)
+* Primary Tenancy is created ( OCI )
+
 
 ### Dependencies
 
