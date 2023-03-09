@@ -15,6 +15,50 @@ The user Sign-up with AWS and OCI with email address and Credit Card Details
 * Root Organization and Management Account is created (AWS)
 * Primary Tenancy is created ( OCI )
 
+## Follow-up Steps
+
+* To Safe guard the Management Account. For one time setup, User Sign-in with Management Account
+* Create IAM User For Example: "management-iam" with IAMFullAcess Policy, AWSOrganizationReadOnlyAccess AWS Managed Policy
+* Create additional two custom Policy "custom-CreateAccount" and "GrantAccessToOrganizationAccountAccessRole"
+
+### Policy Json for "custom-CreateAccount"
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "CreateOrganizationAccounts",
+            "Effect": "Allow",
+            "Action": [
+                "organizations:CreateAccount"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+
+
+### Policy Json for "GrantAccessToOrganizationAccountAccessRole"
+
+This is a dyanamic policy. For every Child Account Created, additional entry of Resource need to be done programatically
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::161987549706:role/OrganizationAccountAccessRole"
+        }
+    ]
+}
+```
+
+
 
 ### Dependencies
 
