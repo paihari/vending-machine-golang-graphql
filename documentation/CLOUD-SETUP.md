@@ -20,6 +20,7 @@ The user Sign-up with AWS and OCI with email address and Credit Card Details
 * To Safe guard the Management Account. For one time setup, User Sign-in with Management Account
 * Create IAM User For Example: "management-iam" with IAMFullAcess Policy, AWSOrganizationReadOnlyAccess AWS Managed Policy
 * Create additional two custom Policy "custom-CreateAccount" and "GrantAccessToOrganizationAccountAccessRole"
+* For the "management-iam" create Security Credentials AWS Access Key and Secret. IAM >> Users >> "management-iam" >> Security Credentials
 
 ### Policy Json for "custom-CreateAccount"
 ```
