@@ -28,7 +28,7 @@ go run ./server.go
 
 * Connect to http://localhost:8080/ for GraphQL playground
 
-![](./images/sample-playground.png | width=100)
+![](./images/sample-playground.png)
 
 
 ## Help
