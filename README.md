@@ -33,7 +33,7 @@ go run ./server.go
 ### Presetup/Pre-requisites
 
 * [Cloud Setup](./documentation/CLOUD-SETUP.md)
-
+* [DB Setup](./documentation/DB-SETUP.md)
 
 
 
