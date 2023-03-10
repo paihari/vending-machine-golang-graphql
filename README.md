@@ -37,12 +37,3 @@ go run ./server.go
 
 
 
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
-
-
-https://github.com/dbader/readme-template 
