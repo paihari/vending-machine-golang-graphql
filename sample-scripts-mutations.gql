@@ -1,8 +1,8 @@
 
 mutation createFederal {
   createFederal(input: {
-    name: "ASAP"
-    fullName: "Avaloq Sourcing Asia Pacific"
+    name: "AVALOQ"
+    fullName: "AVALOQ GROUP"
     
   }) {
     uuid
@@ -24,12 +24,12 @@ mutation createCloudProvider {
 
 mutation createCloudEstate {
   createCloudEstate(input: {
-    name: "ASSL-AWS-ESTATE-1"
-    description:"Cloud Estate 1 for ASSL with AWS"
-    federal: "ASSL"
+    name: "AVALOQ-AWS-ESTATE"
+    description:"Management Account of Avaloq Group with AWS"
+    federal: "AGRO"
     cloudProvider: "AWS"
-    federalEmailAddress: "assl@vending.com"
-    cloudEstateCid: "ORG_CID"
+    federalEmailAddress: "aws@avaqlo.com"
+    cloudEstateCid: "898024814010"
     
   }){
     uuid
@@ -45,11 +45,11 @@ query cloudEstate {
 
 mutation createCloudEstatePolicy {
   createCloudEstatePolicyWithCid(input: {
-    name: "TAG-POLICY-FOR-AEVO-AWS-1"
-    description: "Federal Tag Policy for AEVEO and AWS-1"
-    cloudEstate: "AEVO-AWS-ESTATE"
+    name: "TAG-POLICY-FOR-AEVO-AWS-BY-BY-ARN"
+    description: "Federal Tag Policy for AVALOQ and AWS"
+    cloudEstate: "AVALOQ-AWS-ESTATE"
     policyType: "TAG"
-    policyCid: "POLICYARN"
+    policyCid: "arn:aws:organizations::898024814010:policy/o-py48lgs0w1/tag_policy/p-953m46re9l"
     
   }) {
     uuid
@@ -58,7 +58,7 @@ mutation createCloudEstatePolicy {
 
 mutation createCloudEstatePolicy($tags: JSON!) {
   createCloudEstatePolicyWithJson(input: {
-    name: "TAG-POLICY-FOR-AEVO-AWS-1"
+    name: "TAG-POLICY-FOR-AEVO-AWS-BY-JSON"
     description: "Federal Tag Policy for AEVEO and AWS-1"
     cloudEstate: "AEVO-AWS-ESTATE"
     policyType: "TAG"
@@ -112,10 +112,10 @@ mutation createClass{
 
 mutation createResident {
   createResident(input: {
-    name: "AEVO-AWS-AP-VEND1",
-    description: "The Vending MAchine"
+    name: "cloud-control",
+    description: "Vending Machine for Sprint Dev"
     purchaseOrder: "PONO"
-    emailAddress: "cloudcontrol.ap@gmail.com"
+    emailAddress: "cloudcontrol.ch@gmail.com"
     client: "AEVO"
     cloudEstate: "AEVO-AWS-ESTATE"
     class: "free"
@@ -129,3 +129,93 @@ mutation createResident {
   }
 }
 
+----
+
+query residents {
+  residents {
+    name,
+  }
+}
+
+mutation createUser {
+  createUser(input: {
+    name: "vending-iam-user"
+    description: "vending-iam-user"
+    resident: "cloud-control"
+
+  }) {
+    id
+    uuid
+  }
+}
+
+
+
+-- VENDDING MACHINE FOR THE SPRINT REVIEW READINESS
+
+mutation createResident {
+  createResident(input: {
+    name: "cloud-control-sprint-review-pre-test",
+    description: "Vending Machine for Sprint Pre-Test"
+    purchaseOrder: "PONO"
+    emailAddress: "cloudcontrol.ap@gmail.com"
+    renter: "AEVO"
+    cloudEstate: "AVALOQ-AWS-ESTATE"
+    cloudEstatePolicies: "TAG-POLICY-FOR-AEVO-AWS-BY-BY-ARN"
+    class: "free"
+    stage: "uat"
+    
+  }
+  ) {
+    id
+    uuid
+    cloudEstateCid
+  }
+}
+
+
+mutation createUser {
+  createUser(input: {
+    name: "review-iam-user"
+    description: "review-iam-user"
+    resident: "cloud-control-sprint-review-pre-test"
+
+  }) {
+    id
+    uuid
+  }
+}
+
+
+mutation createResident {
+  createResident(input: {
+    name: "cloud-control-sprint",
+    description: "Vending Machine for Sprint"
+    purchaseOrder: "PONO"
+    emailAddress: "federal.org.evo@gmail.com"
+    renter: "AEVO"
+    cloudEstate: "AVALOQ-AWS-ESTATE"
+    cloudEstatePolicies: "TAG-POLICY-FOR-AEVO-AWS-BY-BY-ARN"
+    class: "free"
+    stage: "uat"
+    
+  }
+  ) {
+    id
+    uuid
+    cloudEstateCid
+  }
+}
+
+
+mutation createUser {
+  createUser(input: {
+    name: "review-sprint-user"
+    description: "review-sprint-user"
+    resident: "cloud-control-sprint"
+
+  }) {
+    id
+    uuid
+  }
+}

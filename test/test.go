@@ -9,6 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
     "github.com/aws/aws-sdk-go-v2/service/sts"
+     
 
 )
 
@@ -22,6 +23,8 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
             "",
         )),
     )
+
+    
     if err != nil {
         return err
     }
@@ -29,7 +32,7 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
     // Assume a role in the child account
     stsClient := sts.NewFromConfig(cfg)
     assumeRoleOutput, err := stsClient.AssumeRole(context.TODO(), &sts.AssumeRoleInput{
-        RoleArn:         aws.String("arn:aws:iam::161987549706:role/OrganizationAccountAccessRole"),
+        RoleArn:         aws.String("arn:aws:iam::<<>>:role/OrganizationAccountAccessRole"),
         RoleSessionName: aws.String("mysession"),
     })
     if err != nil {
@@ -71,6 +74,6 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
 }
 
 func main() {
-  err := createIAMUserInChildAccount("AKIA5CFTTGW5KMWLEPNA", "X6kD43V3oj65wgE5CDQT02TWbiln3EYf+jpClggN", "161987549706", "us-east-1", "cloud-control-iam-user")
+  err := createIAMUserInChildAccount("MGMT KEY", "MGMT SECRET", "CHILD ACCOUNT ID", "us-east-1", "cloud-control-iam-user")
   fmt.Println(err)
 }
