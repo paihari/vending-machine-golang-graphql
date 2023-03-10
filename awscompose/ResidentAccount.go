@@ -9,30 +9,33 @@ import (
 	//"os"
 	
 
-	"github.com/aws/aws-sdk-go-v2/config"
+
 	//"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
 	"github.com/aws/aws-sdk-go-v2/service/organizations/types"
 
 )
 
-func AttachFederationTagPolicyToResidentAccount() {
+func AttachFederationTagPolicyToResidentAccount(policyCid, childAccountId string) {
 
-	cfg, err := config.LoadDefaultConfig(context.Background())
+
+	cfg, err := GetAwsCredenctialConfig()
+
+	//cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
 		fmt.Println("Error loading the Config")
 		return
 	}
 
-	//emailAddress := "pai2023022403@pai.ch"
+
 
 	// Create Organizations client
 	svc := organizations.NewFromConfig(cfg)
 
-	arn := "arn:aws:organizations::898024814010:policy/o-py48lgs0w1/tag_policy/p-953m46re9l"
-	parts := strings.Split(arn, "/")
-	policyID := parts[len(parts)-1] // 12345678-abcd-1234-abcd-123456789012
-	childAccountId := "161987549706"
+
+	parts := strings.Split(policyCid, "/")
+	policyID := parts[len(parts)-1] 
+
 
 
 	_, err = svc.AttachPolicy(context.TODO(), &organizations.AttachPolicyInput{
@@ -44,29 +47,16 @@ func AttachFederationTagPolicyToResidentAccount() {
 
 }
 
-
-
 func CreateResidentAccount(accountName string, emailAddress string) (string, error) {
 
+	cfg, err := GetAwsCredenctialConfig()
+
+
 	//Load AWS config
-	cfg, err := config.LoadDefaultConfig(context.Background())
+	//cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
 		return "", fmt.Errorf("error loading AWS config: %w", err)
 	}
-
-	//accessKey := os.Getenv("AWS_ACCESS_KEY_ID")
-    //secretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
-
-
-
-    // Create a new static credentials provider
-    // creds := credentials.NewStaticCredentialsProvider(accessKey, secretKey, "")
-
-    // // Load AWS config with the new credentials provider
-    // cfg, err := config.LoadDefaultConfig(context.Background(), config.WithCredentialsProvider(creds))
-    // if err != nil {
-    //     return "", fmt.Errorf("error loading AWS config: %w", err)
-    // }
 
 	// Create Organizations client
 	svc := organizations.NewFromConfig(cfg)
@@ -104,6 +94,7 @@ func CreateResidentAccount(accountName string, emailAddress string) (string, err
 		
 		if state == types.CreateAccountStateSucceeded {
 			// Account creation process is complete
+			
 			return *describeCreateAccountResult.CreateAccountStatus.AccountId, nil
 		} else if state == types.CreateAccountStateFailed {
 			// Account creation process has failed

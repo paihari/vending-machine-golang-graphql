@@ -18,7 +18,7 @@ CREATE TABLE federals (
     PRIMARY KEY(id)
 );
 
-INSERT INTO federals(name, full_name) VALUES ('AGRO', 'Avaloq Group');
+INSERT INTO federals(name, full_name) VALUES ('AVALOQ', 'Avaloq Group');
 
 
 -- CLOUD_PROVIDERS
@@ -72,7 +72,7 @@ CREATE TABLE cloud_estates (
     PRIMARY KEY(id)
 );
 
-INSERT INTO cloud_estates(name, description, federal, cloud_provider, cloud_estate_cid) VALUES ('AEVO-AWS-ESTATE', 'Cloud Estate for AEVO', 'AEVO', 'AWS', '-- ORG ID CREATED BY MANAGEMENT USER DURING INITIAL SIGIN IN--');
+INSERT INTO cloud_estates(name, description, federal, cloud_provider, cloud_estate_cid) VALUES ('AVALOQ-AWS-ESTATE', 'AWS Cloud Estate for AVALOQ', 'AVALOQ', 'AWS', '-- ORG ID CREATED BY MANAGEMENT USER DURING INITIAL SIGIN IN--');
 
 
 
@@ -87,7 +87,7 @@ CREATE TABLE cloud_estate_policies (
     uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT,
     description TEXT,
-    cloud_estate TEXT REFERENCES cloud_estates(name),
+    cloud_estate TEXT REFERENCES cloud_estates(name) ON DELETE CASCADE,
     policy_type TEXT,
     -- ARN of the POLICY CREATED by the Management Account
     policy_cid TEXT,
@@ -118,8 +118,8 @@ INSERT INTO cloud_estate_policies(name, description, cloud_estate, policy_type, 
 
 
 
-drop table clients;
-CREATE TABLE clients (
+drop table renters;
+CREATE TABLE renters (
     id SERIAL,
     uuid uuid DEFAULT uuid_generate_v4 (),
     name TEXT UNIQUE,
@@ -131,10 +131,10 @@ CREATE TABLE clients (
     PRIMARY KEY(id)
 );
 
-INSERT INTO clients(name, full_name) VALUES ('AEVO', 'Avaloq Evolution');
-INSERT INTO clients(name, full_name) VALUES ('ASSL', 'Avaloq Sourcing CH');
-INSERT INTO clients(name, full_name) VALUES ('ASAP', 'Avaloq Sourcing AP');
-INSERT INTO clients(name, full_name) VALUES ('APLH', 'Aplha Bank AG');
+INSERT INTO renters(name, full_name) VALUES ('AEVO', 'Avaloq Evolution');
+INSERT INTO renters(name, full_name) VALUES ('ASSL', 'Avaloq Sourcing CH');
+INSERT INTO renters(name, full_name) VALUES ('ASAP', 'Avaloq Sourcing AP');
+INSERT INTO renters(name, full_name) VALUES ('APLH', 'Aplha Bank AG');
 
 
 drop table classes;
@@ -191,13 +191,14 @@ CREATE TABLE residents (
     description TEXT,
     purchase_order TEXT,
     email_address TEXT,
-    client TEXT REFERENCES clients(name),
+    renter TEXT REFERENCES renters(name),
     cloud_provider TEXT REFERENCES cloud_providers(name),
     -- CHILD ACCOUNT ID EG AWS
     resident_cid TEXT,
     -- ORGANIZATION ID/CLOUD ESTATE CID
-    cloud_estate TEXT REFERENCES cloud_estates(name),
+    cloud_estate TEXT REFERENCES cloud_estates(name) ,
     cloud_estate_cid TEXT REFERENCES cloud_estates(cloud_estate_cid), 
+    cloud_estate_policies TEXT[],
     class TEXT REFERENCES classes(name),
     stage TEXT REFERENCES stages(name),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -206,9 +207,76 @@ CREATE TABLE residents (
     updated_by TEXT,
     PRIMARY KEY(id)
 );
+ALTER TABLE residents ALTER COLUMN name TYPE character varying(64);
 
 
 -- RESIDENT ARE INSERTED BY VENDING MACHINES
 
-INSERT INTO residents(name, description, purchase_order_id, email_address, client, cloud_provider, resident_cid, cloud_estate_cid, class, stage) 
-VALUES ('AEVO_VEND1', 'The First Vending Machine', 'PO-123456', 'project@vending.avq', 'AEVO', 'AWS', '--ACCOUNT-ID--', '--ORG ESTATE ID', 'free', 'development');
+-- INSERT INTO residents(name, description, purchase_order_id, email_address, client, cloud_provider, resident_cid, cloud_estate_cid, class, stage) 
+-- VALUES ('AEVO_VEND1', 'The First Vending Machine', 'PO-123456', 'project@vending.avq', 'AEVO', 'AWS', '--ACCOUNT-ID--', '--ORG ESTATE ID', 'free', 'development');
+
+drop table users;
+
+CREATE TABLE users (
+    id SERIAL,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name VARCHAR(32) UNIQUE,
+    description TEXT,
+    resident TEXT REFERENCES residents(name) ON DELETE CASCADE,
+    user_cid TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_by TEXT,
+    PRIMARY KEY(id)
+}
+
+ALTER TABLE users ALTER COLUMN name TYPE character varying(64);
+
+-- USERS ARE INSERTED BY VENDING MACHINES
+
+
+CREATE TABLE tag_families (
+    id SERIAL,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    name TEXT NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_by TEXT,
+    PRIMARY KEY(id)
+
+);
+
+INSERT INTO tag_families (name) VALUES ('FINANCE')
+
+drop table tags;
+
+CREATE TABLE tags (
+    id SERIAL,
+    uuid uuid DEFAULT uuid_generate_v4 (),
+    tag  JSON, 
+    tag_family TEXT REFERENCES tag_families(name) ON DELETE CASCADE
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    created_by TEXT,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_by TEXT,
+    PRIMARY KEY(id)
+);
+
+INSERT INTO tags (tag, tag_family)
+VALUES ('[
+    {
+        "Key": "Environment",
+        "Value": "Production"
+    },
+    {
+        "Key": "Team",
+        "Value": "Engineering"
+    }
+]', 'FINANCE');
+
+
+
+
+

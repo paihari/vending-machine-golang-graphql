@@ -9,6 +9,8 @@ import (
 
 
 
+
+
 func GetCloudEstateByName(name string, db *pg.DB ) model.CloudEstate {
 	var cloudEstate model.CloudEstate
 	db.Model(&cloudEstate).Where("name = ?", name).Select()
@@ -36,18 +38,18 @@ func GetFederalByName(name string, db *pg.DB ) model.Federal {
 }
 
 
-func GetClientByName(clientName string, db *pg.DB ) model.Client {
+func GetRenterByName(renterName string, db *pg.DB ) model.Renter {
 
-	var client model.Client
-	db.Model(&client).Where("name = ?", clientName).Select()
-	return client
+	var renter model.Renter
+	db.Model(&renter).Where("name = ?", renterName).Select()
+	return renter
 }
 
-func GetClientByUUID(uuid string, db *pg.DB ) model.Client {
+func GetRenterByUUID(uuid string, db *pg.DB ) model.Renter {
 
-	var client model.Client
-	db.Model(&client).Where("uuid = ?", uuid).Select()
-	return client
+	var renter model.Renter
+	db.Model(&renter).Where("uuid = ?", uuid).Select()
+	return renter
 }
 
 func GetClassByName(className string, db *pg.DB ) model.Class {
@@ -92,6 +94,59 @@ func GetCloudProviderByUUID(uuid string, db *pg.DB) model.CloudProvider {
 	db.Model(&cloudProvider).Where("uuid = ?", uuid).Select()
 	return cloudProvider
 }
+
+
+
+func GetCloudEstatePoliciesByName(policyNames []*string, db *pg.DB ) []*model.CloudEstatePolicy {
+	var cloudEstatePolicys []*model.CloudEstatePolicy
+
+	db.Model(&cloudEstatePolicys).Where("name = ?", policyNames[0]).Select()
+	return cloudEstatePolicys
+}
+
+func GetUserByName(userName string, db *pg.DB) model.User {
+
+	var user model.User
+	db.Model(&user).Where("name = ?", userName).Select()
+	return user
+}
+
+func GetUserByUUID(uuid string, db *pg.DB) model.User {
+
+	var user model.User
+	db.Model(&user).Where("uuid = ?", uuid).Select()
+	return user
+}
+
+func GetResidentByName(residentName string, db *pg.DB) model.Resident {
+
+	var resident model.Resident
+	db.Model(&resident).Where("name = ?", residentName).Select()
+	return resident
+}
+
+func GetResidentByUUID(uuid string, db *pg.DB) model.Resident {
+
+	var resident model.Resident
+	db.Model(&resident).Where("uuid = ?", uuid).Select()
+	return resident
+}
+
+func GetTagByName(tagName string, db *pg.DB) model.Tag {
+
+	var tag model.Tag
+	db.Model(&tag).Where("name = ?", tagName).Select()
+	return tag
+}
+
+func GetTagByUUID(uuid string, db *pg.DB) model.Tag {
+
+	var tag model.Tag
+	db.Model(&tag).Where("uuid = ?", uuid).Select()
+	return tag
+}
+
+
 
 
 func GetDb() *pg.DB {

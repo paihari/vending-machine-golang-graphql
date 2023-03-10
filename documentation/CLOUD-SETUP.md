@@ -54,7 +54,7 @@ This is a dyanamic policy. For every Child Account Created, additional entry of 
             "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
-            "Resource": "arn:aws:iam::<<CHILD-ACCOUNT>:role/OrganizationAccountAccessRole"
+            "Resource": "arn:aws:iam::*:role/OrganizationAccountAccessRole"
         }
     ]
 }

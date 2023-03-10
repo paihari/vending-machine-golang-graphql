@@ -1,37 +1,39 @@
 package awscompose
 
 import (
-    "context"
+	"context"
+	"fmt"
 
-    "github.com/aws/aws-sdk-go-v2/aws"
-    "github.com/aws/aws-sdk-go-v2/config"
-    "github.com/aws/aws-sdk-go-v2/credentials"
-    "github.com/aws/aws-sdk-go-v2/service/iam"
-    "github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/aws/aws-sdk-go-v2/aws"
+
+	"github.com/aws/aws-sdk-go-v2/credentials"
+	"github.com/aws/aws-sdk-go-v2/service/iam"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
+    "github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKey, childAccountID, childRoleARN, childRegion, childUserName string) error {
-    // Create a new session using the management account's access key ID and secret access key
-    cfg, err := config.LoadDefaultConfig(context.TODO(),
-        config.WithRegion(childRegion),
-        config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-            managementAccessKeyID,
-            managementSecretAccessKey,
-            "",
-        )),
-    )
+func CreateIAMUserInChildAccount(childAccountID, childUserName, tag  string) (string, error) {
+    
+    cfg, err := GetAwsCredenctialConfig()
+
     if err != nil {
-        return err
+        fmt.Println(err)
+        return "", err
     }
 
     // Assume a role in the child account
     stsClient := sts.NewFromConfig(cfg)
+
+    childRoleARN := "arn:aws:iam::" + childAccountID + ":role/OrganizationAccountAccessRole" 
+
+
     assumeRoleOutput, err := stsClient.AssumeRole(context.TODO(), &sts.AssumeRoleInput{
         RoleArn:         aws.String(childRoleARN),
         RoleSessionName: aws.String("mysession"),
     })
     if err != nil {
-        return err
+        fmt.Println(err)
+        return "", err
     }
 
     // Create a new session using the temporary credentials from the AssumeRole output
@@ -44,12 +46,26 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
     // Create an IAM client for the child account
     svc := iam.NewFromConfig(cfg)
 
+
+    tags := []types.Tag{
+        {
+            Key:   aws.String("Environment"),
+            Value: aws.String("Production"),
+        },
+        {
+            Key:   aws.String("Team"),
+            Value: aws.String("Engineering"),
+        },
+    }
+
     // Create a new IAM user in the child account
-    _, err = svc.CreateUser(context.TODO(), &iam.CreateUserInput{
+    user, err := svc.CreateUser(context.TODO(), &iam.CreateUserInput{
         UserName: aws.String(childUserName),
+        Tags:     tags,
     })
     if err != nil {
-        return err
+        fmt.Println(err)
+        return "", err
     }
 
     // Attach a policy to the IAM user
@@ -58,8 +74,9 @@ func createIAMUserInChildAccount(managementAccessKeyID, managementSecretAccessKe
         UserName:  aws.String(childUserName),
     })
     if err != nil {
-        return err
+        fmt.Println(err)
+        return "", err
     }
 
-    return nil
+    return *user.User.Arn, nil
 }

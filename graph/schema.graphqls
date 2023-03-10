@@ -95,7 +95,7 @@ input NewCloudEstatePolicyWithJson {
   policyJson: JSON!
 }
 
-type Client {
+type Renter {
   id: ID!
   uuid: String!
   name: String!
@@ -107,7 +107,7 @@ type Client {
 
 }
 
-input NewClient {
+input NewRenter {
   name: String!
   fullName: String!
 }
@@ -156,11 +156,12 @@ type Resident {
   description: String!
   purchaseOrder: String!
   emailAddress: String!
-  client: String!
+  renter: String!
   cloudProvider: String!
   residentCid: String!
   cloudEstate: String!
   cloudEstateCid: String!
+  cloudEstatePolicies: [String]
   class: String!
   stage: String!
   createdAt: String!
@@ -175,10 +176,62 @@ input NewResident {
   purchaseOrder: String!
   emailAddress: String!
   cloudEstate: String
-  client: String!
+  cloudEstatePolicies: [String]
+  renter: String!
   class: String!
   stage: String!
 }
+
+type User {
+  id: ID!
+  uuid: String!
+  name: String!
+  description: String!
+  resident: String!
+  userCid: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+
+}
+
+input NewUser {
+  name: String!
+  description: String!
+  resident: String!
+
+}
+
+
+type TagFamily {
+  id: ID!
+  uuid: String!
+  name: String!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+
+}
+
+type Tag {
+  id: ID!
+  uuid: String!
+  tagFamily: String
+  tag: JSON!
+  createdAt: String!
+  createdBy: String!
+  updatedAt: String!
+  updatedBy: String!
+}
+
+
+
+
+
+
 
 type Query {
   
@@ -199,9 +252,9 @@ type Query {
 
   cloudEstatePolicys: [CloudEstatePolicy!]! 
 
-  clients: [Client!]! 
-  clientByName(name: String!): Client
-  clientByUUID(uuid: String!): Client
+  renters: [Renter!]! 
+  renterByName(name: String!): Renter
+  renterByUUID(uuid: String!): Renter
 
   classes: [Class!]! 
   classByName(name: String!): Class
@@ -216,6 +269,17 @@ type Query {
   residentByName(name: String!): Resident
   residentByUUID(uuid: String!): Resident
 
+  users: [User!]!
+  userByName(name: String!): User
+  userByUUID(uuid: String!): User
+
+  tags: [Tag!]!
+  tagByName(name: String!): Tag
+  tagByUUID(uuid: String!): Tag
+
+
+
+
 }
 
 type Mutation {
@@ -229,12 +293,14 @@ type Mutation {
 
   createCloudEstatePolicyWithJson(input: NewCloudEstatePolicyWithJson!): CloudEstatePolicy!
 
-  createClient(input: NewClient!): Client
+  createRenter(input: NewRenter!): Renter!
 
-  createClass(input: NewClass!): Class
+  createClass(input: NewClass!): Class!
 
-  createStage(input: NewStage!): Stage
+  createStage(input: NewStage!): Stage!
 
   createResident(input: NewResident!): Resident!
+
+  createUser(input: NewUser!): User
 
 }

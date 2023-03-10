@@ -141,22 +141,22 @@ func (r *mutationResolver) CreateCloudEstatePolicyWithJSON(ctx context.Context, 
 	return &cloudEstatePolicy, nil
 }
 
-// CreateClient is the resolver for the createClient field.
-func (r *mutationResolver) CreateClient(ctx context.Context, input model.NewClient) (*model.Client, error) {
+// CreateRenter is the resolver for the createRenter field.
+func (r *mutationResolver) CreateRenter(ctx context.Context, input model.NewRenter) (*model.Renter, error) {
 	db := base.GetDb()
 	defer db.Close()
 
-	client := model.Client{
+	renter := model.Renter{
 		Name:     input.Name,
 		FullName: input.FullName,
 	}
 
-	_, error := db.Model(&client).Insert()
+	_, error := db.Model(&renter).Insert()
 
 	if error != nil {
-		return nil, fmt.Errorf("error inserting new Client : %v", error)
+		return nil, fmt.Errorf("error inserting new Renter : %v", error)
 	}
-	return &client, nil
+	return &renter, nil
 }
 
 // CreateClass is the resolver for the createClass field.
@@ -203,12 +203,20 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 	defer db.Close()
 
 	cloudEstate := base.GetCloudEstateByName(*input.CloudEstate, db)
+
 	cloudProvider := base.GetCloudProviderByName(cloudEstate.CloudProvider, db)
-	client := base.GetClientByName(input.Client, db)
+	
+	renter := base.GetRenterByName(input.Renter, db)
 
 	stage := base.GetStageByName(input.Stage, db)
 
 	class := base.GetClassByName(input.Class, db)
+
+	policies := base.GetCloudEstatePoliciesByName(input.CloudEstatePolicies, db)
+
+	for _, policy := range policies {
+		fmt.Println(*policy)
+	}
 
 	var createdBy, updatedBy string
 	createdBy = "VEND"
@@ -221,22 +229,28 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 		return nil, err
 	}
 
-	//residentCid := "SOME CID"
+	//residentCid := "161987549706"
+
+	policyStrings := make([]*string, len(policies))
+	for i, policy := range policies {
+		policyStrings[i] = &policy.Name
+		awscompose.AttachFederationTagPolicyToResidentAccount(policy.PolicyCid, residentCid)
+	}
 
 	resident := model.Resident{
 		Name:           input.Name,
 		Description:    input.Description,
 		PurchaseOrder:  input.PurchaseOrder,
 		EmailAddress:   input.EmailAddress,
-		Client:         client.Name,
+		Renter:         renter.Name,
 		CloudProvider:  cloudProvider.Name,
 		ResidentCid:    residentCid,
 		CloudEstate:    cloudEstate.Name,
 		CloudEstateCid: cloudEstate.CloudEstateCid,
-		Class:          class.Name,
-		Stage:          stage.Name,
-		CreatedBy:      createdBy,
-		UpdatedBy:      updatedBy,
+		Class:     class.Name,
+		Stage:     stage.Name,
+		CreatedBy: createdBy,
+		UpdatedBy: updatedBy,
 	}
 
 	_, error := db.Model(&resident).Insert()
@@ -246,6 +260,45 @@ func (r *mutationResolver) CreateResident(ctx context.Context, input model.NewRe
 	}
 
 	return &resident, nil
+}
+
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	resident := base.GetResidentByName(input.Resident, db)
+
+	tag := base.GetTagByName("FINANCE", db)
+	
+
+	userCid, err := awscompose.CreateIAMUserInChildAccount(resident.ResidentCid, input.Name, tag.Tag)
+	if err != nil {
+
+		log.Fatalf("Unable to Create User %v", err)
+		return nil, err
+	}
+
+	fmt.Println(userCid)
+
+	var createdBy, updatedBy string
+	createdBy = "VEND"
+
+	user := model.User{
+		Name:        input.Name,
+		Description: input.Description,
+		Resident:    resident.Name,
+		UserCid:     userCid,
+		CreatedBy:   createdBy,
+		UpdatedBy:   updatedBy,
+	}
+
+	_, error := db.Model(&user).Insert()
+
+	if error != nil {
+		return nil, fmt.Errorf("error inserting new User: %v", error)
+	}
+	return &user, nil
 }
 
 // Federals is the resolver for the federals field.
@@ -386,9 +439,9 @@ func (r *queryResolver) CloudEstatePolicys(ctx context.Context) ([]*model.CloudE
 	return cloudEstatePolicys, nil
 }
 
-// Clients is the resolver for the clients field.
-func (r *queryResolver) Clients(ctx context.Context) ([]*model.Client, error) {
-	var clients []*model.Client
+// Renters is the resolver for the renters field.
+func (r *queryResolver) Renters(ctx context.Context) ([]*model.Renter, error) {
+	var renters []*model.Renter
 
 	connStr := os.Getenv("DB_URL")
 	opt, err := pg.ParseURL(connStr)
@@ -399,29 +452,29 @@ func (r *queryResolver) Clients(ctx context.Context) ([]*model.Client, error) {
 	db := pg.Connect(opt)
 	defer db.Close()
 
-	error := db.Model(&clients).Select()
+	error := db.Model(&renters).Select()
 	if error != nil {
 		return nil, error
 	}
 
-	return clients, nil
+	return renters, nil
 }
 
-// ClientByName is the resolver for the clientByName field.
-func (r *queryResolver) ClientByName(ctx context.Context, name string) (*model.Client, error) {
+// RenterByName is the resolver for the renterByName field.
+func (r *queryResolver) RenterByName(ctx context.Context, name string) (*model.Renter, error) {
 	db := base.GetDb()
 	defer db.Close()
 
-	client := base.GetClientByName(name, db)
-	return &client, nil
+	renter := base.GetRenterByName(name, db)
+	return &renter, nil
 }
 
-// ClientByUUID is the resolver for the clientByUUID field.
-func (r *queryResolver) ClientByUUID(ctx context.Context, uuid string) (*model.Client, error) {
+// RenterByUUID is the resolver for the renterByUUID field.
+func (r *queryResolver) RenterByUUID(ctx context.Context, uuid string) (*model.Renter, error) {
 	db := base.GetDb()
 	defer db.Close()
 
-	client := base.GetClientByUUID(uuid, db)
+	client := base.GetRenterByUUID(uuid, db)
 	return &client, nil
 }
 
@@ -526,12 +579,95 @@ func (r *queryResolver) Residents(ctx context.Context) ([]*model.Resident, error
 
 // ResidentByName is the resolver for the residentByName field.
 func (r *queryResolver) ResidentByName(ctx context.Context, name string) (*model.Resident, error) {
-	panic(fmt.Errorf("not implemented: ResidentByName - residentByName"))
+	db := base.GetDb()
+	defer db.Close()
+
+	resident := base.GetResidentByName(name, db)
+	return &resident, nil
+
 }
 
 // ResidentByUUID is the resolver for the residentByUUID field.
 func (r *queryResolver) ResidentByUUID(ctx context.Context, uuid string) (*model.Resident, error) {
-	panic(fmt.Errorf("not implemented: ResidentByUUID - residentByUUID"))
+	db := base.GetDb()
+	defer db.Close()
+
+	resident := base.GetResidentByUUID(uuid, db)
+	return &resident, nil
+
+}
+
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	var users []*model.User
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&users).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return users, nil
+}
+
+// UserByName is the resolver for the userByName field.
+func (r *queryResolver) UserByName(ctx context.Context, name string) (*model.User, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	user := base.GetUserByName(name, db)
+	return &user, nil
+
+}
+
+// UserByUUID is the resolver for the userByUUID field.
+func (r *queryResolver) UserByUUID(ctx context.Context, uuid string) (*model.User, error) {
+	db := base.GetDb()
+	defer db.Close()
+
+	user := base.GetUserByUUID(uuid, db)
+	return &user, nil
+
+}
+
+// Tags is the resolver for the tags field.
+func (r *queryResolver) Tags(ctx context.Context) ([]*model.Tag, error) {
+	var tags []*model.Tag
+
+	connStr := os.Getenv("DB_URL")
+	opt, err := pg.ParseURL(connStr)
+	if err != nil {
+		panic(err)
+	}
+
+	db := pg.Connect(opt)
+	defer db.Close()
+
+	error := db.Model(&tags).Select()
+	if error != nil {
+		return nil, error
+	}
+
+	return tags, nil
+
+}
+
+// TagByName is the resolver for the tagByName field.
+func (r *queryResolver) TagByName(ctx context.Context, name string) (*model.Tag, error) {
+	panic(fmt.Errorf("not implemented: TagByName - tagByName"))
+}
+
+// TagByUUID is the resolver for the tagByUUID field.
+func (r *queryResolver) TagByUUID(ctx context.Context, uuid string) (*model.Tag, error) {
+	panic(fmt.Errorf("not implemented: TagByUUID - tagByUUID"))
 }
 
 // Mutation returns MutationResolver implementation.
