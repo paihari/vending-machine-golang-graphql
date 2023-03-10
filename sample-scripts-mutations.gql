@@ -187,3 +187,35 @@ mutation createUser {
 }
 
 
+mutation createResident {
+  createResident(input: {
+    name: "cloud-control-sprint",
+    description: "Vending Machine for Sprint"
+    purchaseOrder: "PONO"
+    emailAddress: "federal.org.evo@gmail.com"
+    renter: "AEVO"
+    cloudEstate: "AVALOQ-AWS-ESTATE"
+    cloudEstatePolicies: "TAG-POLICY-FOR-AEVO-AWS-BY-BY-ARN"
+    class: "free"
+    stage: "uat"
+    
+  }
+  ) {
+    id
+    uuid
+    cloudEstateCid
+  }
+}
+
+
+mutation createUser {
+  createUser(input: {
+    name: "review-iam-user"
+    description: "review-iam-user"
+    resident: "cloud-control-sprint"
+
+  }) {
+    id
+    uuid
+  }
+}
