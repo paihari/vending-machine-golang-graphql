@@ -210,8 +210,8 @@ mutation createResident {
 
 mutation createUser {
   createUser(input: {
-    name: "review-iam-user"
-    description: "review-iam-user"
+    name: "review-sprint-user"
+    description: "review-sprint-user"
     resident: "cloud-control-sprint"
 
   }) {
