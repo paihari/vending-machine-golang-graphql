@@ -104,12 +104,7 @@ More examples in:
 
 ---
 
-## 📝 License
-
-This project is licensed under the MIT License.
-
----
 
 ## ✍️ Author
 
-Built with ❤️ by [Your Name or Organization]
+Built with Simplificare
