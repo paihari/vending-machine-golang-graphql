@@ -1,4 +1,4 @@
-# 🧃 Vending Machine POC — Go + GraphQL
+# 🧃 Vending Machine POC — Go + GraphQL 
 
 A proof-of-concept (POC) microservice that models a vending machine backend using **Golang**, **GraphQL**, and **PostgreSQL**. This application is cloud-ready and includes modules to simulate multi-cloud scenarios (AWS, OCI).
 
